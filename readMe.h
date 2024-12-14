@@ -1,32 +1,32 @@
-#pragma once
-// ÀÌ°Å »ç½Ç ¾Ë°í¸®Áò ¸ðÀ½Áý ¾Æ´Ô
-// ÇØ´õ¿¡´Ù°¡ ¸Þ¼­µå ±¸Çö±îÁö °íºÀ¹äÀ¸·Î ²Ë²Ë ¿ì°Ü³Ö¾ú´Âµ¥
-// Å¬·¡½º °¡Á®´Ù ³õ±â ÆíÇÏ¶ó°í & º¯ÇüÇÏ±â ÆíÇÏ¶ó°í ÇÑ°÷¿¡ ¸ô¾Æ³ÖÀº°Å
-// ´ëºÎºÐÀÇ ÀÚ·áµéÀÌ ÆíÀÇ¸¦ À§ÇØ Vector2/Vector3 Å¬·¡½º¸¦ ±â¹ÝÀ¸·Î »ç¿ëµÈ°Å¶ó ÁÖÀÇ ÇÊ¿ä
-// directX¿Í winAPI, Çì´õÆÄÀÏ·Î ³ª´µ¾ú´Âµ¥
-// d3dx9.h°¡ ÇÊ¿äÇÑ ¾Öµé°ú windows.h°¡ ÇÊ¿äÇÑ ¾Öµé, ±×¸®°í ±× ¿Ü ³ª¸ÓÁö·Î ³ª´«°Å
+// THIS IS NOT ALGORITHMS COLLECTION!!!!
+// ì´ê±° ì‚¬ì‹¤ ì•Œê³ ë¦¬ì¦˜ ëª¨ìŒì§‘ ì•„ë‹˜
+// í•´ë”ì—ë‹¤ê°€ ë©”ì„œë“œ êµ¬í˜„ê¹Œì§€ ê³ ë´‰ë°¥ìœ¼ë¡œ ê½‰ê½‰ ìš°ê²¨ë„£ì—ˆëŠ”ë°
+// í´ëž˜ìŠ¤ ê°€ì ¸ë‹¤ ë†“ê¸° íŽ¸í•˜ë¼ê³  & ë³€í˜•í•˜ê¸° íŽ¸í•˜ë¼ê³  í•œê³³ì— ëª°ì•„ë„£ì€ê±°
+// ëŒ€ë¶€ë¶„ì˜ ìžë£Œë“¤ì´ íŽ¸ì˜ë¥¼ ìœ„í•´ Vector2/Vector3 í´ëž˜ìŠ¤ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì‚¬ìš©ëœê±°ë¼ ì£¼ì˜ í•„ìš”
+// directXì™€ winAPI, í—¤ë”íŒŒì¼ë¡œ ë‚˜ë‰˜ì—ˆëŠ”ë°
+// d3dx9.hê°€ í•„ìš”í•œ ì• ë“¤ê³¼ windows.hê°€ í•„ìš”í•œ ì• ë“¤, ê·¸ë¦¬ê³  ê·¸ ì™¸ ë‚˜ë¨¸ì§€ë¡œ ë‚˜ëˆˆê±°
 
 
-// readMeÀÇ ¸¶Áö¸· ¼öÁ¤ : 2024-09-27 12:22
+// readMeì˜ ë§ˆì§€ë§‰ ìˆ˜ì • : 2024-09-27 12:22
 
 
-// ¸ñ·Ï (Çì´õ ÆÄÀÏ ÀÌ¸§)
-// Vector2 -> ÁÂÇ¥¸¦ ¾²±â ÆíÇÏµµ·Ï ¸¸µé¾î³õÀº Å¬·¡½º ±¸Á¶Ã¼
-// Astar => a*¾Ë°í¸®Áò ±æÃ£±â(Á¤¼ö ÁÂÇ¥)
-// Collision Simple => ´Ü¼ø µµÇü(³×¸ð¿Í µ¿±×¶ó¹Ì) Ãæµ¹¿©ºÎ È®ÀÎ¿ë - ³×¸ð°¡ È¸ÀüµÇÀÖÁö ¾Ê¾Æ¾ßÇÔ (AABB ±â¹ý)
-// CollisionADV -> CollisionSimple¿¡ ¾à°£ÀÇ ±â´ÉÀ» Ãß°¡ÇÑ ¹öÁ¯ => winAPI Àü¿ëÀÌ µÉ°Å °°´Ù
-// SAT/SAT3D -> Separating Axis Theorem ¾Ë°í¸®Áò Ãæµ¹¿©ºÎ È®ÀÎ (OBB ±â¹ý)
-// Camera2D -> 2d¿¡¼­ È­¸é ÁÂÇ¥¿Í ¿ùµå ÁÂÇ¥ º¯È¯¿ë
-// DFSBFS => ³ëµå ÄÁÅ×ÀÌ³Ê °ü·Ã ³ëµå Å½»ö ¹æ¹ý ¸ðÀ½
-// ImageHandler => bmp ÀÌ¹ÌÁö ÆÄÀÏÀ» ºÒ·¯¿Í¼­ È­¸é¿¡ ·»´õ¸µ ½ÃÄÑÁÜ, 2dÀü¿ë
-// ImageRenderer => ImageHandler¸¦ »ç¿ëÇØ ¾Ö´Ï¸ÞÀÌ¼Ç ´À³¦ÀÌ ³ª°Ô ¸¸µé¾îÁÜ
-// InputManager => Å°º¸µå/¸¶¿ì½º ÀÔ·Â °¨Áö(ºü¸¥ ¹ÝÀÀ/¸¹Àº ¸®¼Ò½º)
-// TimeManager => frame per second°°Àº ÇÁ·¹ÀÓ ½Ã°£ ´Ù·ë
-// NumberOfCases => combinationÀ» ÀÌ¿ëÇÑ °æ¿ìÀÇ ¼ö ¸ðµÎ Ã£±â(´Ù¸¸, Á¤¸» ¸ðµÎ Å½»öÇÏ±â ¶§¹®¿¡ ½Ã°£º¹Àâµµ°¡ Áö¼ö½Ã°£ÀÌ´Ù(°ÅÀÇ ÃÖ¾Ç))
-// Singleton ¸ÅÅ©·Î
-// NumberOfCases => °æ¿ìÀÇ ¼ö¸¦ »Ì´Â°Å
-// DFSBFS => ±×·¡ÇÁ³ª Æ®¸®°°Àº ºñ¼±Çü ÀÚ·á±¸Á¶ÀÇ ³ëµåÅ½»ö(±íÀÌ¿ì¼±/³ÐÀÌ¿ì¼± Å½»ö)
-// MeshLoader => .x ÆÄÀÏ°ú .jpg°°Àº ÀÌ¹ÌÁö ÆÄÀÏÀ¸·Î texture, material, mesh ·Îµå
-// Camera3D => 3Â÷¿ø ±â¹Ý Ä«¸Þ¶ó Á¦¾î
-// UIs => ui ¸¸µé¶§ »ó¼ÓÇØ ¾²·Á°í ÇÑ ¾ÖµéÀÎµ¥ °ú¿¬ ¾µ±î?
-// Vector3 => ÁÂÇ¥¸¦ ¾²±â ÆíÇÏµµ·Ï ¸¸µé¾î³õÀº Å¬·¡½º ±¸Á¶Ã¼, D3DXVECTOR3¿Í È£È¯µÇ°Ô ÇØ³ùÀ½
+// ëª©ë¡ (í—¤ë” íŒŒì¼ ì´ë¦„)
+// Vector2 -> ì¢Œí‘œë¥¼ ì“°ê¸° íŽ¸í•˜ë„ë¡ ë§Œë“¤ì–´ë†“ì€ í´ëž˜ìŠ¤ êµ¬ì¡°ì²´
+// Astar => a*ì•Œê³ ë¦¬ì¦˜ ê¸¸ì°¾ê¸°(ì •ìˆ˜ ì¢Œí‘œ)
+// Collision Simple => ë‹¨ìˆœ ë„í˜•(ë„¤ëª¨ì™€ ë™ê·¸ë¼ë¯¸) ì¶©ëŒì—¬ë¶€ í™•ì¸ìš© - ë„¤ëª¨ê°€ íšŒì „ë˜ìžˆì§€ ì•Šì•„ì•¼í•¨ (AABB ê¸°ë²•)
+// CollisionADV -> CollisionSimpleì— ì•½ê°„ì˜ ê¸°ëŠ¥ì„ ì¶”ê°€í•œ ë²„ì ¼ => winAPI ì „ìš©ì´ ë ê±° ê°™ë‹¤
+// SAT/SAT3D -> Separating Axis Theorem ì•Œê³ ë¦¬ì¦˜ ì¶©ëŒì—¬ë¶€ í™•ì¸ (OBB ê¸°ë²•)
+// Camera2D -> 2dì—ì„œ í™”ë©´ ì¢Œí‘œì™€ ì›”ë“œ ì¢Œí‘œ ë³€í™˜ìš©
+// DFSBFS => ë…¸ë“œ ì»¨í…Œì´ë„ˆ ê´€ë ¨ ë…¸ë“œ íƒìƒ‰ ë°©ë²• ëª¨ìŒ
+// ImageHandler => bmp ì´ë¯¸ì§€ íŒŒì¼ì„ ë¶ˆëŸ¬ì™€ì„œ í™”ë©´ì— ë Œë”ë§ ì‹œì¼œì¤Œ, 2dì „ìš©
+// ImageRenderer => ImageHandlerë¥¼ ì‚¬ìš©í•´ ì• ë‹ˆë©”ì´ì…˜ ëŠë‚Œì´ ë‚˜ê²Œ ë§Œë“¤ì–´ì¤Œ
+// InputManager => í‚¤ë³´ë“œ/ë§ˆìš°ìŠ¤ ìž…ë ¥ ê°ì§€(ë¹ ë¥¸ ë°˜ì‘/ë§Žì€ ë¦¬ì†ŒìŠ¤)
+// TimeManager => frame per secondê°™ì€ í”„ë ˆìž„ ì‹œê°„ ë‹¤ë£¸
+// NumberOfCases => combinationì„ ì´ìš©í•œ ê²½ìš°ì˜ ìˆ˜ ëª¨ë‘ ì°¾ê¸°(ë‹¤ë§Œ, ì •ë§ ëª¨ë‘ íƒìƒ‰í•˜ê¸° ë•Œë¬¸ì— ì‹œê°„ë³µìž¡ë„ê°€ ì§€ìˆ˜ì‹œê°„ì´ë‹¤(ê±°ì˜ ìµœì•…))
+// Singleton ë§¤í¬ë¡œ
+// NumberOfCases => ê²½ìš°ì˜ ìˆ˜ë¥¼ ë½‘ëŠ”ê±°
+// DFSBFS => ê·¸ëž˜í”„ë‚˜ íŠ¸ë¦¬ê°™ì€ ë¹„ì„ í˜• ìžë£Œêµ¬ì¡°ì˜ ë…¸ë“œíƒìƒ‰(ê¹Šì´ìš°ì„ /ë„“ì´ìš°ì„  íƒìƒ‰)
+// MeshLoader => .x íŒŒì¼ê³¼ .jpgê°™ì€ ì´ë¯¸ì§€ íŒŒì¼ìœ¼ë¡œ texture, material, mesh ë¡œë“œ
+// Camera3D => 3ì°¨ì› ê¸°ë°˜ ì¹´ë©”ë¼ ì œì–´
+// UIs => ui ë§Œë“¤ë•Œ ìƒì†í•´ ì“°ë ¤ê³  í•œ ì• ë“¤ì¸ë° ê³¼ì—° ì“¸ê¹Œ?
+// Vector3 => ì¢Œí‘œë¥¼ ì“°ê¸° íŽ¸í•˜ë„ë¡ ë§Œë“¤ì–´ë†“ì€ í´ëž˜ìŠ¤ êµ¬ì¡°ì²´, D3DXVECTOR3ì™€ í˜¸í™˜ë˜ê²Œ í•´ë†¨ìŒ
