@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="directX">
+      <UniqueIdentifier>{057b3479-1438-4154-9778-a6c016c44932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinAPI">
+      <UniqueIdentifier>{79046475-3d58-414d-897a-e18eead5e845}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Astar.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SAT.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="readMe.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSimple.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberOfCases.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DFSBFS.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="setting.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="UIs.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera3D.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageHandler.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SAT3D.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="temp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera2D.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorHandler.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionADV.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DInputManager.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="IOManager.h">
+      <Filter>WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>directX</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
