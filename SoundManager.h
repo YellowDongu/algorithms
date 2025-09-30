@@ -111,146 +111,182 @@ void MCISoundManager::release()
 #pragma comment (lib, "D:\PJ\C++\FMods\x64\fmodL_vc.lib")
 
 #include <map>
+#include <memory>
+#include <unordered_map>
 
+//class Channel
+//{
+//public:
+//	Channel(void) : channel{ nullptr }, sounds{ SoundManager::GetInstance()->sounds }, system{ SoundManager::GetInstance()->fmodSys } {} // 상호참조 방지위해 cpp에 배치하면 됨
+//	~Channel(void) = default;
+//
+//	bool IsPlaying(void) { bool playing; if (channel->isPlaying(&playing) != FMOD_RESULT::FMOD_OK) return false; return playing; }
+//	HRESULT Play(const std::string& soundName, bool loop = false)
+//	{
+//		std::map<std::string, FMOD::Sound*>::iterator sound = sounds.find(soundName);
+//		if (sound == sounds.end())
+//			return E_FAIL;
+//
+//		if (system->playSound(sound->second, 0, false, &channel) != FMOD_RESULT::FMOD_OK)
+//			return E_FAIL;
+//		if (loop)
+//		{
+//			channel->setMode(FMOD_LOOP_NORMAL);
+//			channel->setLoopCount(-1);
+//		}
+//
+//		return S_OK;
+//	}
+//	void Stop(void) { if (!IsPlaying()) return; channel->stop(); }
+//	HRESULT PlayNew(const std::string& soundName, bool loop = false) { Stop(); return Play(soundName, loop); }
+//
+//	//HRESULT PlayCrossFade(std::wstring nextSoundName);
+//	HRESULT LoadSound(const std::string& soundPath, const std::string& soundName) { return SoundManager::GetInstance()->loadSound(soundPath, soundName); }
+//	void ChangeVolume(float value)
+//	{
+//		if (value > 1.0f) value = 1.0f;
+//		else if (value < 0.0f) value = 0.0f;
+//		channel->setVolume(value);
+//	}
+//
+//private:
+//	//friend class SoundManager;
+//	FMOD::Channel* channel;
+//	std::map<std::string, FMOD::Sound*>& sounds;
+//	FMOD::System*& system;
+//};
 
 class SoundManager
 {
+	SoundManager(void) = default;
+	~SoundManager(void) = default;
 public:
-	SoundManager();
-	~SoundManager();
+	class Channel // 나중에 분리하도록 -> 구조 상 상호참조가 되어있어 샘플코드만 어쩔 수 없이 이렇게 함
+	{
+	public:
+		Channel(void) : channel{ nullptr }, sounds{ SoundManager::GetInstance()->sounds }, system{ SoundManager::GetInstance()->fmodSys } {} // 상호참조 방지
+		~Channel(void) = default;
+
+		bool IsPlaying(void) { bool playing; if (channel->isPlaying(&playing) != FMOD_RESULT::FMOD_OK) return false; return playing; }
+		HRESULT Play(const std::string& soundName, bool loop = false)
+		{
+			std::map<std::string, FMOD::Sound*>::iterator sound = sounds.find(soundName);
+			if (sound == sounds.end())
+				return E_FAIL;
+
+			if (system->playSound(sound->second, 0, false, &channel) != FMOD_RESULT::FMOD_OK)
+				return E_FAIL;
+			if (loop)
+			{
+				channel->setMode(FMOD_LOOP_NORMAL);
+				channel->setLoopCount(-1);
+			}
+
+			return S_OK;
+		}
+		void Stop(void) { if (!IsPlaying()) return; channel->stop(); }
+		HRESULT PlayNew(const std::string& soundName, bool loop = false) { Stop(); return Play(soundName, loop); }
+
+		//HRESULT PlayCrossFade(std::wstring nextSoundName);
+		HRESULT LoadSound(const std::string& soundPath, const std::string& soundName) { return SoundManager::GetInstance()->loadSound(soundPath, soundName); }
+		void ChangeVolume(float value)
+		{
+			if (value > 1.0f) value = 1.0f;
+			else if (value < 0.0f) value = 0.0f;
+			channel->setVolume(value);
+		}
+
+	private:
+		//friend class SoundManager;
+		FMOD::Channel* channel;
+		std::map<std::string, FMOD::Sound*>& sounds;
+		FMOD::System*& system;
+	};
 
 	SoundManager(const SoundManager&) = delete;
 	SoundManager& operator=(const SoundManager&) = delete;
 
-	static void instantiate();
-	static void destroy();
+	static std::shared_ptr<SoundManager> Create(void)
+	{
+		if (instance) return instance;
 
-	void init();
-	void update();
-	void release();
+		instance = std::make_shared<SoundManager>();
+		if (FAILED(instance->Start()))
+		{
+			instance.reset();
+			return nullptr;
+		}
+		return instance;
+	}
+	static std::shared_ptr<SoundManager> GetInstance(void) { if (instance == nullptr) return Create(); return instance; }
+	static void Destroy(void)
+	{
+		instance->release();
+		instance.reset();
+	}
 
-	void loadSound(std::string path, std::string fileName);
-	void playBGM(std::string soundName);
-	FMOD::Channel* playNew(std::string soundName);
-	void stopSound(FMOD::Channel* channel);
-	bool checkPlaying(FMOD::Channel* channel);
-	void changeVolume(FMOD::Channel* channel, float value);
+	HRESULT Start(void)
+	{
+		if (FMOD::System_Create(&fmodSys) != FMOD_RESULT::FMOD_OK)
+			return E_FAIL;
+
+		// 최대 32채널 사용
+		if (fmodSys->init(32, FMOD_INIT_NORMAL, 0) != FMOD_RESULT::FMOD_OK)
+			return E_FAIL;
+
+		fmodSys->update();
+		return S_OK;
+	}
+	void Update(void) { fmodSys->update(); }
+	void release(void)
+	{
+		for (auto& channel : channels)
+		{
+			channel->Stop();
+		}
+		channels.clear();
+		for (auto& sound : sounds)
+		{
+			sound.second->release();
+		}
+		sounds.clear();
+
+		fmodSys->close();
+		fmodSys->release();
+	}
+
+
+	HRESULT loadSound(const std::string& path, const std::string& fileName)
+	{
+		FMOD::Sound* newSound = nullptr;
+		if (fmodSys->createSound((path + fileName).c_str(), FMOD_DEFAULT, 0, &newSound) != FMOD_RESULT::FMOD_OK)
+			return E_FAIL;
+		sounds[fileName] = newSound;
+		return S_OK;
+	}
+	std::shared_ptr<Channel> CreateChannel(void)
+	{
+		std::shared_ptr<Channel> newChannel = std::make_unique<Channel>();
+		if(newChannel == nullptr)
+			return newChannel;
+
+		channels.push_back(newChannel);
+		return newChannel;
+	}
+
 
 
 private:
-	FMOD::System* fmodSys;
+	friend class Channel;
+	FMOD::System* fmodSys{nullptr};
 	std::map<std::string, FMOD::Sound*> sounds;
-	FMOD::Channel* BGMchannel;
-
+	std::vector<std::shared_ptr<Channel>> channels;
+	static std::shared_ptr<SoundManager> instance;
 };
 
-
-SoundManager* Sound;
-
+std::shared_ptr<SoundManager> SoundManager::instance{nullptr};
 
 
-SoundManager::SoundManager() : sounds{}, fmodSys(nullptr), BGMchannel(nullptr)
-{
-}
-
-SoundManager::~SoundManager()
-{
-
-}
-
-void SoundManager::instantiate()
-{
-	if (Sound) return;
-
-	Sound = new SoundManager();
-	Sound->init();
-}
-
-void SoundManager::init()
-{
-	FMOD::System_Create(&fmodSys);
-	// 최대 32채널 사용
-	fmodSys->init(32, FMOD_INIT_NORMAL, 0);
-	fmodSys->update();
-}
-
-void SoundManager::update()
-{
-	fmodSys->update();
-}
-
-void SoundManager::release()
-{
-	if (BGMchannel)
-		stopSound(BGMchannel);
-
-	for (auto& sound : sounds)
-	{
-		sound.second->release();
-	}
-	sounds.clear();
-
-	fmodSys->close();
-	fmodSys->release();
-}
-
-void SoundManager::loadSound(std::string path, std::string fileName)
-{
-	FMOD::Sound* newSound = nullptr;
-	fmodSys->createSound((path + fileName).c_str(), FMOD_DEFAULT, 0, &newSound);
-	sounds[fileName] = newSound;
-}
-
-void SoundManager::playBGM(std::string soundName)
-{
-	if (checkPlaying(BGMchannel))
-		BGMchannel->stop();
-
-	auto sound = sounds.find(soundName);
-	if (sound == sounds.end()) return;
-
-	fmodSys->playSound(sound->second, 0, false, &BGMchannel);
-	BGMchannel->setMode(FMOD_LOOP_NORMAL);
-	BGMchannel->setLoopCount(-1);
-}
-
-FMOD::Channel* SoundManager::playNew(std::string soundName)
-{
-	FMOD::Channel* newChannel = nullptr;
-
-	auto sound = sounds.find(soundName);
-	if (sound == sounds.end()) return nullptr;
-
-	fmodSys->playSound(sound->second, 0, false, &BGMchannel);
-	return newChannel;
-}
-
-void SoundManager::stopSound(FMOD::Channel* channel)
-{
-	if (!checkPlaying(channel)) return;
-	channel->stop();
-}
-
-bool SoundManager::checkPlaying(FMOD::Channel* channel)
-{
-	bool playing = false;
-	if (channel->isPlaying(&playing) != FMOD_OK) return false;
-	return playing;
-}
-
-void SoundManager::changeVolume(FMOD::Channel* channel, float value)
-{
-	if (value > 1.0f) value = 1.0f;
-	else if (value < 0.0f) value = 0.0f;
-	channel->setVolume(value);
-}
-
-void SoundManager::destroy()
-{
-	Sound->release();
-	delete Sound;
-	Sound = nullptr;
-}
 
 //x86
 // 이건 윈API는 직접적으로 쓰진 않지만

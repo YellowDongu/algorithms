@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -145,12 +145,15 @@
     <ClInclude Include="CollisionSimple.h" />
     <ClInclude Include="DFSBFS.h" />
     <ClInclude Include="DInputManager.h" />
+    <ClInclude Include="DirectX11Device.h" />
     <ClInclude Include="ErrorHandler.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="ImageHandler.h" />
     <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IOManager.h" />
+    <ClInclude Include="KDTree.h" />
+    <ClInclude Include="Kruskal.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="NumberOfCases.h" />
     <ClInclude Include="QuadTree.h" />
@@ -166,8 +169,10 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="UIs.h" />
+    <ClInclude Include="UnionFind.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="소인수분해.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
