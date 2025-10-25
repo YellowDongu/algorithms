@@ -3,7 +3,72 @@
 #include <vector>
 #include <list>
 #include <memory>
+#include <queue>
 #include "Vector2.h"
+
+
+struct Dijkstra
+{
+	Dijkstra(void) : size(0) {}
+	Dijkstra(int resize) : graph(resize), size(resize), costTable(resize) {}
+
+	int Size(void) { return size; }
+	const std::vector<std::vector<std::pair<int, int>>>& Graph(void) const { return graph; }
+	const std::vector<std::vector<int>>& CostTable(void) const { return costTable; }
+
+	int size{ 0 };
+	std::vector<std::vector<std::pair<int, int>>> graph;
+	std::vector<std::vector<int>> costTable;
+
+	void PushLine(int from, int to, int cost)
+	{
+		int max = std::max(from, to);
+		if (size <= max)
+			graph.resize(max + 1);
+
+		graph[from].push_back({ to, cost });
+	}
+
+	void CreateCostTable(int startNode, std::vector<int>& output)
+	{
+		output.resize(size);
+		for (auto& item : output)
+			item = std::numeric_limits<int>::max();
+		output[startNode] = 0;
+
+		std::priority_queue<std::pair<int, int>> queue;
+		queue.push({ 0, startNode });
+		//std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<int>> queue;
+
+		while (!queue.empty())
+		{
+			int current = queue.top().second;
+			int cost = queue.top().first;
+			queue.pop();
+
+			if (output[current] < cost)
+				continue;
+
+			for (auto& node : graph[current])
+			{
+				int nextCost = cost + node.second;
+				if (nextCost >= output[node.first])
+					continue;
+				
+				output[node.first] = nextCost;
+				queue.push({nextCost, node.first});
+			}
+		}
+	}
+
+	void CalculateAll(void)
+	{
+		costTable.resize(size);
+		for (int i = 0; i < size; i++)
+			CreateCostTable(i, costTable[i]);
+	}
+};
+
 
 
 // 각 좌표들을 객채로 생성해서 부표처럼 쓰고 있음
@@ -29,11 +94,34 @@ public:
 	Grid2D(void) : w(0), h(0), startPos{0,0} {}
 	~Grid2D(void) = default;
 
-	void init(int _width, int _height, bool _defaultPassable = true);
 	const int& width(void) const { return w; }
 	const int& height(void) const { return h; }
 	const Vector2Int& startPosition() const { return startPos; }
-	NavNode* getNode(Vector2Int) const;
+	void init(int _width, int _height, bool _defaultPassable = true)
+	{
+		w = _width;
+		h = _height;
+		if (!nodeList.empty()) nodeList.clear();
+
+		for (int y = 0; y < _height; y++)
+		{
+			for (int x = 0; x < _width; x++)
+			{
+				Vector2Int nodePos = Vector2Int{ x,y } + startPos;
+				nodeList.push_back(std::make_unique<NavNode>(nodePos, _defaultPassable));
+			}
+		}
+	}
+
+	NavNode* getNode(Vector2Int pos) const
+	{
+		Vector2Int relativePos = pos - startPos;
+		if (relativePos.x <= 0 || relativePos.x > w || relativePos.y <= 0 || relativePos.y > h)
+			return nullptr;
+		int index = relativePos.y * w + relativePos.x;
+
+		return nodeList[index].get();
+	}
 
 private:
 	std::vector<std::unique_ptr<NavNode>> nodeList;
@@ -41,33 +129,6 @@ private:
 	Vector2Int startPos;
 	int w, h;
 };
-
-NavNode* Grid2D::getNode(Vector2Int pos) const
-{
-	Vector2Int relativePos = pos - startPos;
-	if (relativePos.x <= 0 || relativePos.x > w || relativePos.y <= 0 || relativePos.y > h)
-		return nullptr;
-	int index = relativePos.y * w + relativePos.x;
-
-	return nodeList[index].get();
-}
-
- void Grid2D::init(int _width, int _height, bool _defaultPassable)
-{
-	w = _width;
-	h = _height;
-	if (!nodeList.empty()) nodeList.clear();
-
-	for (int y = 0; y < _height; y++)
-	{
-		for (int x = 0; x < _width; x++)
-		{
-			Vector2Int nodePos = Vector2Int{ x,y } + startPos;
-			nodeList.push_back(std::make_unique<NavNode>(nodePos, _defaultPassable));
-		}
-	}
-}
-
 
 // Vector2Int 사용 => 2d상의 좌표를 이용함, 상승과 하강은 높이에 따른 추가적인 값을 더해서 상승하는 길로 가는 코스트를 늘리는 형식으로 높이를 무시하지 못하게 하면 됨
 // 올라갈때 느려지게 한다든지는 다른데서 구현하시구

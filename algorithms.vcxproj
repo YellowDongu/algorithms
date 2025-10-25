@@ -138,7 +138,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationCurve.h" />
     <ClInclude Include="Astar.h" />
+    <ClInclude Include="bezierCurve.h" />
     <ClInclude Include="Camera3D.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="CollisionADV.h" />
@@ -146,7 +148,10 @@
     <ClInclude Include="DFSBFS.h" />
     <ClInclude Include="DInputManager.h" />
     <ClInclude Include="DirectX11Device.h" />
+    <ClInclude Include="DP.h" />
     <ClInclude Include="ErrorHandler.h" />
+    <ClInclude Include="FenwickTree.h" />
+    <ClInclude Include="FloydWarshall.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="ImageHandler.h" />
     <ClInclude Include="ImageRenderer.h" />
@@ -160,6 +165,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="readMe.h" />
+    <ClInclude Include="RTree.h" />
     <ClInclude Include="SAT.h" />
     <ClInclude Include="SAT3D.h" />
     <ClInclude Include="setting.h" />
@@ -168,6 +174,7 @@
     <ClInclude Include="temp.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="UIs.h" />
     <ClInclude Include="UnionFind.h" />
     <ClInclude Include="Vector2.h" />

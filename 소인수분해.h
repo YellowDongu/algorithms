@@ -8,14 +8,14 @@
 #include <string>
 #include <map>
 
-int 에라토스테네스식전처리(int n) // 기본, O(n log n), n이 10^6까지 가능
+int 에라토스테네스식전처리(int size) // 기본, O(n log n), n이 10^6까지 가능
 {
 	int answer = 0;
-	std::vector<int> factors(n + 1, 0);
+	std::vector<int> factors(size + 1, 0);
 
-	for (int i = 1; i <= n; i++)
+	for (int i = 1; i <= size; i++)
 	{
-		for (int j = i; j <= n; j += i)
+		for (int j = i; j <= size; j += i)
 		{
 			factors.push_back(j);
 		}
@@ -23,12 +23,12 @@ int 에라토스테네스식전처리(int n) // 기본, O(n log n), n이 10^6까지 가능
 
 	return answer;
 }
-std::vector<std::vector<int>> 에라토스테네스식전처리_전체(int n)
+std::vector<std::vector<int>> 에라토스테네스식전처리_전체(int size)
 {
-	std::vector<std::vector<int>> divisors(n + 1);
-	for (int i = 1; i <= n; i++)
+	std::vector<std::vector<int>> divisors(size + 1);
+	for (int i = 1; i <= size; i++)
 	{
-		for (int j = i; j <= n; j += i)
+		for (int j = i; j <= size; j += i)
 		{
 			divisors[j].push_back(i);
 		}
@@ -36,12 +36,12 @@ std::vector<std::vector<int>> 에라토스테네스식전처리_전체(int n)
 	return divisors;
 }
 
-std::vector<int> 에라토스테네스식전처리_하나(int n)
+std::vector<int> 에라토스테네스식전처리_하나(int size)
 {
-	std::vector<int> divisors(n + 1);
-	for (int i = 1; i <= n; i++)
+	std::vector<int> divisors(size + 1);
+	for (int i = 1; i <= size; i++)
 	{
-		for (int j = i; j <= n; j += i)
+		for (int j = i; j <= size; j += i)
 		{
 			divisors.push_back(i);
 		}
@@ -49,15 +49,15 @@ std::vector<int> 에라토스테네스식전처리_하나(int n)
 	return divisors;
 }
 
-std::vector<int> 제곱근탐색(int n)//O(√n), n이 10^9여도 빠르게 계산 가능
+std::vector<int> 제곱근탐색(int size)//O(√n), n이 10^9여도 빠르게 계산 가능
 {
 	std::vector<int> result;
-	for (int i = 1; i * i <= n; i++)
+	for (int i = 1; i * i <= size; i++)
 	{
-		if (n % i == 0)
+		if (size % i == 0)
 		{
 			result.push_back(i);
-			if (i != n / i) result.push_back(n / i); // 대칭 약수
+			if (i != size / i) result.push_back(size / i); // 대칭 약수
 		}
 	}
 	std::sort(result.begin(), result.end()); // 정렬
@@ -65,20 +65,20 @@ std::vector<int> 제곱근탐색(int n)//O(√n), n이 10^9여도 빠르게 계산 가능
 }
 
 
-std::vector<int> 소인수분해(long long n)
+std::vector<int> 소인수분해(long long size)
 {
 	std::vector<std::pair<long long, int>> factors; // (소수, 지수)
-	for (long long i = 2; i * i <= n; i++)
+	for (long long i = 2; i * i <= size; i++)
 	{
 		int cnt = 0;
-		while (n % i == 0)
+		while (size % i == 0)
 		{
-			n /= i;
+			size /= i;
 			cnt++;
 		}
 		if (cnt > 0) factors.push_back({ i, cnt });
 	}
-	if (n > 1) factors.push_back({ n, 1 });
+	if (size > 1) factors.push_back({ size, 1 });
 
 	std::vector<int> result = { 1 };
 	for (auto& factor : factors)
