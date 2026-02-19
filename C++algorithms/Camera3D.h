@@ -335,3 +335,62 @@ void MainCamera::update(LPDIRECT3DDEVICE9& d3dDevice)
     d3dDevice->SetTransform(D3DTS_VIEW, &matView);
 }
 */
+
+#include <d3d11.h>
+#include <directxmath.h>
+
+class Camera
+{
+public:
+    Camera(void) = default;
+    ~Camera(void) = default;
+
+    //void update();
+
+    DirectX::XMFLOAT3& Position(void) {return position; }
+    DirectX::XMFLOAT3& Rotation(void) {return angle; }
+    void rotate(Vector3 _towards);
+
+    DirectX::XMFLOAT4X4& ViewMatrix(void) { return viewMatrix; }
+    DirectX::XMFLOAT4X4& ProjectionMatrix(void) { return projectionMatrix; }
+
+    void SetViewMatrix(void)
+    {
+        DirectX::XMMATRIX matrix = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+        matrix.r[3] = DirectX::XMVectorSetW(DirectX::XMLoadFloat3(&position), 1.0f);
+        view = DirectX::XMMatrixInverse(nullptr, matrix); // heavy
+        DirectX::XMStoreFloat4x4(&viewMatrix, view);
+    }
+
+    void SetViewMatrixLight(void)
+    {
+        DirectX::XMMATRIX matrix = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+        matrix.r[3] = DirectX::XMVectorSetW(DirectX::XMLoadFloat3(&position), 1.0f);
+        DirectX::XMStoreFloat4x4(&viewMatrix, view);
+        //DirectX::XMMatrixLookAtLH();
+        //view = DirectX::XMMatrixInverse(nullptr, matrix); // heavy
+    }
+
+    void SetProjectionMatrix(float _fov, float _aspectRatio, float _nearZ, float _farZ)
+    {
+        fov = _fov;
+        aspectRatio = _aspectRatio;
+        nearZ = _nearZ;
+        farZ = _farZ;
+        projection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, nearZ, farZ);
+        DirectX::XMStoreFloat4x4(&projectionMatrix, projection);
+	}
+
+
+private:
+    float fov, aspectRatio, nearZ, farZ;
+
+    DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT3 angle; // eular angle (x=pitch, y=yaw, z=roll)
+
+    DirectX::XMMATRIX view;
+    DirectX::XMMATRIX projection;
+    DirectX::XMFLOAT4X4 projectionMatrix;
+    DirectX::XMFLOAT4X4 viewMatrix;
+
+};

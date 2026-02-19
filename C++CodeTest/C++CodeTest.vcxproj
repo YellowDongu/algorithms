@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{4f8bdc7d-0cf4-4b7d-8a53-c3f958274168}</ProjectGuid>
-    <RootNamespace>algorithms</RootNamespace>
+    <ProjectGuid>{a54df04f-e8d6-45ca-99c7-c3e7053b76f6}</ProjectGuid>
+    <RootNamespace>CCodeTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -30,7 +30,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -70,14 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Iib\x64;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -101,8 +93,6 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -129,63 +119,16 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="BJ.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Programmers.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimationCurve.h" />
-    <ClInclude Include="Astar.h" />
-    <ClInclude Include="BellmanFord.h" />
-    <ClInclude Include="bezierCurve.h" />
-    <ClInclude Include="Camera3D.h" />
-    <ClInclude Include="Camera2D.h" />
-    <ClInclude Include="CollisionADV.h" />
-    <ClInclude Include="CollisionSimple.h" />
-    <ClInclude Include="DFSBFS.h" />
-    <ClInclude Include="DInputManager.h" />
-    <ClInclude Include="DirectX11Device.h" />
-    <ClInclude Include="DP.h" />
-    <ClInclude Include="ErrorHandler.h" />
-    <ClInclude Include="FastInverseSquareRoot.h" />
-    <ClInclude Include="FenwickTree.h" />
-    <ClInclude Include="FloydWarshall.h" />
-    <ClInclude Include="Frustum.h" />
-    <ClInclude Include="ImageHandler.h" />
-    <ClInclude Include="ImageRenderer.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="IOManager.h" />
-    <ClInclude Include="KDTree.h" />
-    <ClInclude Include="Kruskal.h" />
-    <ClInclude Include="Palindrome.h" />
-    <ClInclude Include="Subsequence.h" />
-    <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="NumberOfCases.h" />
-    <ClInclude Include="QuadTree.h" />
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="Raycast.h" />
-    <ClInclude Include="readMe.h" />
-    <ClInclude Include="RTree.h" />
-    <ClInclude Include="SAT.h" />
-    <ClInclude Include="SAT3D.h" />
-    <ClInclude Include="setting.h" />
-    <ClInclude Include="ShoelaceFormula.h" />
-    <ClInclude Include="Singleton.h" />
-    <ClInclude Include="SoundManager.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="TimeManager.h" />
-    <ClInclude Include="TopologicalSort.h" />
-    <ClInclude Include="TravelingSalesmanProblem.h" />
-    <ClInclude Include="Tree.h" />
-    <ClInclude Include="UIs.h" />
-    <ClInclude Include="UnionFind.h" />
-    <ClInclude Include="Vector2.h" />
-    <ClInclude Include="Vector3.h" />
-    <ClInclude Include="소인수분해.h" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

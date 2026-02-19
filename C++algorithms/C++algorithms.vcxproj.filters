@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="algorithm">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{3d4005ad-43e5-4fe2-bacf-2c369eef82ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\DX">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Other\Others">
+      <UniqueIdentifier>{f7bda69c-e459-4f71-9e03-6b4fa0972513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinAPI">
+      <UniqueIdentifier>{47d5834a-38dd-4639-a66b-679f86196fc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DesignPattern">
+      <UniqueIdentifier>{784ae915-2ad0-4051-99de-559ebb75de28}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera2D.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="DFSBFS.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="DP.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="FastInverseSquareRoot.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="FenwickTree.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="FloydWarshall.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="KDTree.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Kruskal.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberOfCases.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Palindrome.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTree.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="RTree.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="SAT.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="SAT3D.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="ShoelaceFormula.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Subsequence.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Temp.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="TopologicalSort.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="TravelingSalesmanProblem.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="UnionFind.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="소인수분해.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Astar.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="BellmanFord.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="DInputManager.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="UIs.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageHandler.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="IOManager.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Other\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Other\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorHandler.h">
+      <Filter>Other\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Other\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="DX9Setting.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>DesignPattern</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Other\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationCurve.h">
+      <Filter>Other\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="bezierCurve.h">
+      <Filter>Other\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionADV.h">
+      <Filter>Other\WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSimple.h">
+      <Filter>Other\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera3D.h">
+      <Filter>Other\DX</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
