@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <cmath>
 
 #define pi			3.14159265358979f
@@ -68,14 +68,14 @@ public:
 		y = other.y;
 	}
 
-	//ÀüÀ§¿¬»ê
+	//ì „ìœ„ì—°ì‚°
 	Vector2& operator++()
 	{
 		x++;
 		y++;
 		return *this;
 	}
-	// ÈÄÀ§¿¬»ê
+	// í›„ìœ„ì—°ì‚°
 	Vector2 operator++(int)
 	{
 		Vector2 temp{ x, y };
@@ -98,7 +98,7 @@ public:
 		return temp;
 	}
 
-	// ÁÂÇ¥ Àı´ë°ª
+	// ì¢Œí‘œ ì ˆëŒ€ê°’
 	Vector2 absolute() const 
 	{
 		return { abs(x) ,abs(y) };
@@ -108,7 +108,7 @@ public:
 		return { abs(obj.x) ,abs(obj.y) };
 	}
 
-	// º¤ÅÍ ³»Àû
+	// ë²¡í„° ë‚´ì 
 	float dot(const Vector2& other) const
 	{
 		return x * other.x + y * other.y;
@@ -118,7 +118,16 @@ public:
 		return obj.x * sbj.x + obj.y * sbj.y;
 	}
 
-	// º¤ÅÍÀÇ Å©±â(½ºÄ®¶ó)
+	static float Cross(const Vector2& one, const Vector2& other)
+	{
+		return one.x * other.y - one.y * other.x;
+	}
+	float Cross(const Vector2& other)
+	{
+		return x * other.y - y * other.x;
+	}
+
+	// ë²¡í„°ì˜ í¬ê¸°(ìŠ¤ì¹¼ë¼)
 	float magnitude() const
 	{
 		return static_cast<float>(std::sqrt(x * x + y * y));
@@ -128,7 +137,7 @@ public:
 		return static_cast<float>(std::sqrt(obj.x * obj.x + obj.y * obj.y));
 	}
 
-	// µÎ ÁÂÇ¥ °£ »ó´ë °Å¸®
+	// ë‘ ì¢Œí‘œ ê°„ ìƒëŒ€ ê±°ë¦¬
 	float distance(const Vector2& sbj)
 	{
 		return (*this - sbj).magnitude();
@@ -138,7 +147,7 @@ public:
 		return (_Vec1 - _Vec2).magnitude();
 	}
 
-	// ¼öÁ÷ ¼±ºĞÀ» ³ªÅ¸³¿
+	// ìˆ˜ì§ ì„ ë¶„ì„ ë‚˜íƒ€ëƒ„
 	Vector2 perpendicular() const
 	{
 		return { -y, x };
@@ -148,7 +157,7 @@ public:
 		return { -obj.y, obj.x };
 	}
 
-	// ´ÜÀ§ º¤ÅÍ Ç¥Çö (¼ıÀÚ 0~1·Î ¹üÀ§ °íÁ¤)
+	// ë‹¨ìœ„ ë²¡í„° í‘œí˜„ (ìˆ«ì 0~1ë¡œ ë²”ìœ„ ê³ ì •)
 	Vector2 normalize() const
 	{
 		float length = (*this).magnitude();
@@ -160,20 +169,20 @@ public:
 		return { obj.x / length, obj.y / length };
 	}
 
-	// ¶óµğ¾È °¢µµ¸¦ ´ÜÀ§ º¤ÅÍ·Î ³ªÅ¸³»ÁÜ
+	// ë¼ë””ì•ˆ ê°ë„ë¥¼ ë‹¨ìœ„ ë²¡í„°ë¡œ ë‚˜íƒ€ë‚´ì¤Œ
 	static Vector2 getDirectionVector(float _angle)
 	{
 		return Vector2(std::cos(_angle), std::sin(_angle));
 	}
 
-	// ÇöÀç ¶óµğ¾È °¢µµÀÇ Àü¹æÀ» ¾Ë·ÁÁÜ
+	// í˜„ì¬ ë¼ë””ì•ˆ ê°ë„ì˜ ì „ë°©ì„ ì•Œë ¤ì¤Œ
 	Vector2 forward(float _rotation) const
 	{
 		Vector2 DirectionVec = getDirectionVector(_rotation);
 		return Vector2(x * DirectionVec.x - y * DirectionVec.y, x * DirectionVec.y + y * DirectionVec.x);
 	}
 
-	// º¤ÅÍ¸¦ µµ ´ÜÀ§ °¢µµ·Î ¸¸µé¾îÁÜ
+	// ë²¡í„°ë¥¼ ë„ ë‹¨ìœ„ ê°ë„ë¡œ ë§Œë“¤ì–´ì¤Œ
 	static float angle(const Vector2& directionVec)
 	{
 		Vector2 normalVec = directionVec.normalize();
@@ -181,15 +190,58 @@ public:
 		if (normalVec.y < 0) { acosAng = 360.0f - acosAng; }
 		return acosAng;
 	}
-	
 
-	// ÀÔ»çº¤ÅÍ¸¦ ¼±ºĞº¤ÅÍ¿¡ ´ëÇÑ ¹İ»çº¤ÅÍ·Î ¸¸µé¾îÁÜ
+	static std::pair<bool, Vector2> Intersection(const Vector2& one_Start, const Vector2& one_End, const Vector2& other_Start, const Vector2& other_End)
+	{
+		Vector2 vector1 = one_End - one_Start;
+		Vector2 vector2 = other_End - other_Start;
+		Vector2 storage = other_Start - one_Start;
+
+		float denominator = Vector2::Cross(vector1, vector2);
+		if (denominator == 0.0f)
+			return { false, Vector2::zero() };
+
+		float line1Position = Vector2::Cross(storage, vector2) / denominator;
+		float line2Position = Vector2::Cross(storage, vector1) / denominator;
+
+		if (line1Position < 0.0f || line1Position > 1.0f || line2Position < 0.0f || line2Position > 1.0f)
+			return { false, Vector2::zero() };
+
+		return { true, one_Start + vector1 * line1Position };
+	}
+
+	// ì…ì‚¬ë²¡í„°ë¥¼ ì„ ë¶„ë²¡í„°ì— ëŒ€í•œ ë°˜ì‚¬ë²¡í„°ë¡œ ë§Œë“¤ì–´ì¤Œ
 	static Vector2 reflect(const Vector2& vector, const Vector2& segment)
 	{
 		Vector2 normalVec = segment.perpendicular().normalize();
 		return vector - normalVec * (2 * dot(vector, normalVec));
 	}
 
+	static long long CounterClockWise(const Vector2& point1, const Vector2& point2, const Vector2& point3) { return Vector2::Cross(point2 - point1, point3 - point1); }
+	static bool OnLine(const Vector2& lineStart, const Vector2& lineEnd, const Vector2& point) { return std::min(lineStart.x, lineEnd.x) <= point.x && point.x <= std::max(lineStart.x, lineEnd.x) && std::min(lineStart.y, lineEnd.y) <= point.y && point.y <= std::max(lineStart.y, lineEnd.y); }
+	static bool Intersect(const Vector2& one_Start, const Vector2& one_End, const Vector2& other_Start, const Vector2& other_End)
+	{
+		long long ccwValue1 = CounterClockWise(one_Start, one_End, other_Start);
+		long long ccwValue2 = CounterClockWise(one_Start, one_End, other_End);
+		long long ccwValue3 = CounterClockWise(other_Start, other_End, one_Start);
+		long long ccwValue4 = CounterClockWise(other_Start, other_End, one_End);
+
+		// ì¼ë°˜ êµì°¨
+		if (ccwValue1 * ccwValue2 < 0 && ccwValue3 * ccwValue4 < 0)
+			return true;
+
+		// ì¼ì§ì„ ì¸ ê²½ìš° (ì„¸ ì ì´ ì¼ì§ì„ )
+		if (ccwValue1 == 0 && OnLine(one_Start, one_End, other_Start))
+			return true;
+		if (ccwValue2 == 0 && OnLine(one_Start, one_End, other_End))
+			return true;
+		if (ccwValue3 == 0 && OnLine(other_Start, other_End, one_Start))
+			return true;
+		if (ccwValue4 == 0 && OnLine(other_Start, other_End, one_End))
+			return true;
+
+		return false;
+	}
 
 	static Vector2 zero() { return { 0.0f, 0.0f }; }
 	static Vector2 one() { return { 1.0f, 1.0f }; }
@@ -212,11 +264,11 @@ public:
 		return { static_cast<float>(obj.x), static_cast<float>(obj.y) };
 	}
 
-	Vector2Int absolute() const // ÁÂÇ¥ Àı´ë°ª
+	Vector2Int absolute() const // ì¢Œí‘œ ì ˆëŒ€ê°’
 	{
 		return { (int)abs(x), (int)abs(y) };
 	}
-	static Vector2Int absolute(const Vector2& obj) // ÁÂÇ¥ Àı´ë°ª
+	static Vector2Int absolute(const Vector2& obj) // ì¢Œí‘œ ì ˆëŒ€ê°’
 	{
 		return { (int)abs(obj.x), (int)abs(obj.y) };
 	}
@@ -274,14 +326,14 @@ public:
 		x = other.x;
 		y = other.y;
 	}
-	//ÀüÀ§¿¬»ê
+	//ì „ìœ„ì—°ì‚°
 	Vector2Int& operator++()
 	{
 		x++;
 		y++;
 		return *this;
 	}
-	// ÈÄÀ§¿¬»ê
+	// í›„ìœ„ì—°ì‚°
 	Vector2Int operator++(int)
 	{
 		Vector2Int temp{ x, y };
@@ -304,7 +356,7 @@ public:
 		return temp;
 	}
 
-	// µÎ ÁÂÇ¥ °£ »ó´ë °Å¸®
+	// ë‘ ì¢Œí‘œ ê°„ ìƒëŒ€ ê±°ë¦¬
 	float distance(const Vector2Int& sbj)
 	{
 		return (*this - sbj).magnitude();
@@ -314,7 +366,7 @@ public:
 		return (_Vec1 - _Vec2).magnitude();
 	}
 
-	// º¤ÅÍ ³»Àû
+	// ë²¡í„° ë‚´ì 
 	int dot(const Vector2Int& other) const
 	{
 		return x * other.x + y * other.y;
@@ -324,7 +376,7 @@ public:
 		return obj.x * sbj.x + obj.y * sbj.y;
 	}
 
-	// ½ºÄ®¶ó °ª
+	// ìŠ¤ì¹¼ë¼ ê°’
 	float magnitude() const
 	{
 		return static_cast<float>(std::sqrt(x * x + y * y));
@@ -334,7 +386,7 @@ public:
 		return static_cast<float>(std::sqrt(obj.x * obj.x + obj.y * obj.y));
 	}
 
-	// ¼öÁ÷ ¼±ºĞ
+	// ìˆ˜ì§ ì„ ë¶„
 	Vector2Int perpendicular() const
 	{
 		return { -y, x };

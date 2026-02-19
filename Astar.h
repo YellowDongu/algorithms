@@ -7,6 +7,68 @@
 #include "Vector2.h"
 
 
+struct BellmanFord
+{
+	std::vector<std::vector<std::pair<int, int>>> graph;
+
+	void BaseMethod(int startIndex, std::vector<int>& result)
+	{
+		int length = static_cast<int>(graph.size());
+		result.resize(length, std::numeric_limits<int>::max());
+		result[startIndex] = 0;
+
+		for (int i = 0; i < length - 1; ++i)
+		{
+			for (int j = 0; j < length; ++j)
+			{
+				if (result[j] == std::numeric_limits<int>::max())
+					continue;
+
+				for (auto& item : graph[j])
+					result[item.first] = std::min(result[item.first], result[j] + item.second);
+			}
+		}
+	}
+
+	void SPFA(int startIndex, std::vector<int>& result)
+	{
+		int length = static_cast<int>(graph.size());
+		std::list<int> queue{ startIndex };
+		std::vector<bool> inQueue(length, false);
+
+		result.resize(length, std::numeric_limits<int>::max());
+		result[startIndex] = 0;
+
+		while (!queue.empty())
+		{
+			int index = queue.front();
+			queue.pop_front();
+
+			inQueue[index] = false;
+
+			for (auto& item : graph[index])
+			{
+				int nextCost = result[index] + item.second;
+				if (result[item.first] <= nextCost)
+					continue;
+
+				result[item.first] = nextCost;
+
+				if (!inQueue[item.first])
+				{
+					queue.push_back(item.first);
+					inQueue[item.first] = true;
+				}
+			}
+		}
+	}
+
+};
+
+
+
+
+
 struct Dijkstra
 {
 	Dijkstra(void) : size(0) {}

@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationCurve.h" />
     <ClInclude Include="Astar.h" />
+    <ClInclude Include="BellmanFord.h" />
     <ClInclude Include="bezierCurve.h" />
     <ClInclude Include="Camera3D.h" />
     <ClInclude Include="Camera2D.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="DirectX11Device.h" />
     <ClInclude Include="DP.h" />
     <ClInclude Include="ErrorHandler.h" />
+    <ClInclude Include="FastInverseSquareRoot.h" />
     <ClInclude Include="FenwickTree.h" />
     <ClInclude Include="FloydWarshall.h" />
     <ClInclude Include="Frustum.h" />
@@ -159,6 +161,8 @@
     <ClInclude Include="IOManager.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Kruskal.h" />
+    <ClInclude Include="Palindrome.h" />
+    <ClInclude Include="Subsequence.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="NumberOfCases.h" />
     <ClInclude Include="QuadTree.h" />
@@ -169,11 +173,13 @@
     <ClInclude Include="SAT.h" />
     <ClInclude Include="SAT3D.h" />
     <ClInclude Include="setting.h" />
+    <ClInclude Include="ShoelaceFormula.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SoundManager.h" />
-    <ClInclude Include="temp.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="TopologicalSort.h" />
+    <ClInclude Include="TravelingSalesmanProblem.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="UIs.h" />
     <ClInclude Include="UnionFind.h" />

@@ -111,3 +111,56 @@ struct UnionFindAdvenced
 
 
 //https://gmlwjd9405.github.io/2018/08/31/algorithm-union-find.html
+
+
+
+
+
+struct Edge
+{
+    int to;
+    int weight;
+    bool operator>(const Edge& other) const
+    {
+        return weight > other.weight;
+    }
+};
+#include <queue>
+int prim(int start, const std::vector<std::vector<std::pair<int, int/*weight, to*/>>>& graph)
+{
+    int n = graph.size();
+    std::vector<bool> visited(n, false);
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+    int totalCost = 0;
+
+    // 시작 정점의 간선들을 넣기
+    visited[start] = true;
+    for (auto& edge : graph[start])
+    {
+        pq.push(edge);
+    }
+
+    // 트리 확장
+    while (!pq.empty())
+    {
+        std::pair<int, int> cur = pq.top();
+        pq.pop();
+
+        if (visited[cur.second]) continue;
+
+        visited[cur.second] = true;
+        totalCost += cur.first;
+
+        for (auto& next : graph[cur.second])
+        {
+            if (!visited[next.second])
+            {
+                pq.push(next);
+            }
+        }
+    }
+
+    return totalCost;
+}
+
+

@@ -89,9 +89,6 @@
     <ClInclude Include="QuadTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="temp.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Camera2D.h">
       <Filter>WinAPI</Filter>
     </ClInclude>
@@ -150,6 +147,27 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="DP.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TopologicalSort.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShoelaceFormula.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Subsequence.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TravelingSalesmanProblem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Palindrome.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BellmanFord.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FastInverseSquareRoot.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

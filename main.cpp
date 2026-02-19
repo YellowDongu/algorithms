@@ -1,4 +1,4 @@
-
+#include <thread>
 #include <iostream>
 #include "NumberOfCases.h"
 
@@ -17,6 +17,8 @@ int main()
 		}
 		std::cout << std::endl;
 	}
+
+	std::thread thread = std::thread();
 
 	return 0;
 }

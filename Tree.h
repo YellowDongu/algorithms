@@ -272,38 +272,78 @@ void PostOrderRestoreRecursive(std::vector<std::vector<int>>& tree, const std::v
 
 	build(0, length - 1, 0, length - 1);
 }
+ 
+//세그먼트 트리
+// 구간의 합을 미리 구해놓는거
+// 원본 배열이 {1, 2, 1, 4, 5}일때의 예시임
+// node 1 [1-5] =13 : █ █ █ █ █
+// node 2 [1-3] = 4 : █ █ █ □ □
+// node 3 [4-5] = 9 : □ □ □ █ █
+// node 4 [1-2] = 3 : █ █ □ □ □
+// node 5 [3-3] = 1 : □ □ █ □ □
+// node 6 [4-4] = 4 : □ □ □ █ □
+// node 7 [5-5] = 5 : □ □ □ □ █
+// node 8 [1-1] = 1 : █ □ □ □ □
+// node 9 [2-2] = 2 : □ █ □ □ □
+//각 구간을 왼쪽부터 쪼개서 우선적으로 배열에 할당하는거고 할당이 끝났으면 상향식으로 계속 더해가면서 넣는거
+// ㄴ이걸 재귀로 실행하는거
+//이걸 구간합을 구할때 역순으로 타고 올라가서 구하는거
+// 2~5를 예를 들면
+// 2~3과 4~5로 쪼개고 (2~3의 인덱스는 1 * 2, 4~5의 인덱스는 1 * 2 + 1)
+// 4~5는 그대로 충족되니깐 그걸 그대로 사용하고
+// 2~3은 1~3에 충족 안되니 한번 더 쪼개서 2~2와 3~3, 인덱스는 2(1 * 2) * 2, 2 * 2 + 1
+// 2~2와 3~3은 그대로 충족되니깐 그걸 그대로 사용해서 총 구간이 3개가 나와 3개의 값을 더해야 구간 합이 나와
+// (2~2 =>) 2 + (3~3 =>) 1 + (4~5 =>) 9 = 12
 
-
-
-class SegmentTree
+class SegmentTree // 1 base index
 {
 public:
-	SegmentTree(const std::vector<int>& arr) { CreateTree(arr); }
-
-	void CreateTree(const std::vector<int>& arr)
+	SegmentTree(void) = default;
+	SegmentTree(const std::vector<int>& list) : array(list), size(static_cast<int>(list.size())), tree(list.size() * 4)
 	{
-		array = arr;
-		size = arr.size();
-		tree.resize(size * 4);
-		Build(arr, 1, 0, size - 1);
+		array.insert(array.begin(), 0);
+		Build(array, 1, 1, size);
+	}
+	SegmentTree(std::vector<int>::const_iterator begin, std::vector<int>::const_iterator end, int nodeLength) : array(begin, end), size(nodeLength), tree(nodeLength * 4)
+	{
+		array.insert(array.begin(), 0);
+		Build(array, 1, 1, size);
 	}
 
+	void CreateTree(std::vector<int>::const_iterator begin, std::vector<int>::const_iterator end)
+	{
+		array = std::vector<int>(begin, end);
+		size = array.size();
+		tree.resize(size * 4);
+		Build(array, 1, 0, size - 1);
+	}
+	void CreateTree(const std::vector<int>& list)
+	{
+		array = list;
+		size = array.size();
+		tree.resize(size * 4);
+		Build(array, 1, 0, size - 1);
+	}
 	void Update(int index, int value)
 	{
 		array[index] = value;
-		Update(1, 0, size - 1, index, value);
+		Update(1, 1, size, index, value);
 	}
-	int Search(int left, int right) { return Search(1, 0, size - 1, left, right); }
+
+	int Search(int left, int right) { return Search(1, 1, size, left, right); }
 
 	static void Sample(void)
 	{
 		std::vector<int> origin = { 1, 3, 5, 7, 9, 11 };
 		SegmentTree sampleTree(origin);
 
-		std::cout << sampleTree.Search(1, 3) << "\n"; // 3+5+7 = 15
-		sampleTree.Update(1, 10); // arr[1] = 10
-		std::cout << sampleTree.Search(1, 3) << "\n"; // 10+5+7 = 22
+		std::cout << sampleTree.Search(2, 4) << "\n"; // 3+5+7 = 15
+		sampleTree.Update(2, 10); // arr[1] = 10
+		std::cout << sampleTree[2] << "\n"; // arr[1] => 10
+		std::cout << sampleTree.Search(2, 4) << "\n"; // 10+5+7 = 22
 	}
+
+	int operator[] (int index) { return array[index + 1]; }
 
 private:
 	void Build(const std::vector<int>& arr, int node, int start, int end)
@@ -339,9 +379,9 @@ private:
 	int Search(int node, int start, int end, int left, int right)
 	{
 		if (right < start || end < left)
-			return 0; // inside
+			return 0; // outside
 		if (left <= start && end <= right)
-			return tree[node]; // outside
+			return tree[node]; // inside
 
 		int middle = (start + end) / 2;
 		return Search(node * 2, start, middle, left, right) + Search(node * 2 + 1, middle + 1, end, left, right);

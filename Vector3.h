@@ -6,6 +6,7 @@
 #pragma comment (lib, "winmm.lib")
 
 #include <cmath>
+#include <vector>
 
 // 다렉에서 준거 안쓰고 이걸 만드는 이유
 // 1. 내가 유니티에 절여저있어서 유니티랑 비슷하게 만들고 싶음
@@ -187,6 +188,40 @@ public:
 	Vector3 perpendicular2D(void) const { return Vector3{ -z, y, x }; }
 	static Vector3 perpendicular2D(const Vector3& obj) { return Vector3(-obj.z, obj.y, obj.x); }
 
+	inline static std::pair<bool, Vector3> Intersection(const Vector3& point11, const Vector3& point12, const Vector3& point21, const Vector3& point22)
+	{
+		Vector3 dump;
+		return Intersection(point11, point12, point21, point22, dump);
+	}
+
+	static std::pair<bool, Vector3> Intersection(const Vector3& point11, const Vector3& point12, const Vector3& point21, const Vector3& point22, Vector3& nearPoint)
+	{
+		Vector3 vector1 = point12 - point11;
+		Vector3 vector2 = point22 - point21;
+		Vector3 pointDifference = point11 - point21;
+
+		float vector1Square = Vector3::dot(vector1, vector1);
+		float vectorDot = Vector3::dot(vector1, vector2);
+		float vector2Square = Vector3::dot(vector2, vector2);
+		float dot1 = Vector3::dot(vector1, pointDifference);
+		float dot2 = Vector3::dot(vector2, pointDifference);
+
+		float denominator = vector1Square * vector2Square - vectorDot * vectorDot;
+		if (denominator == 0.0f)
+			return { false, Vector3::zero() };
+
+		float line1Position = (vectorDot * dot2 - vector2Square * dot1) / denominator;
+		float line2Position = (vector1Square * dot2 - vectorDot * dot1) / denominator;
+
+		if (line1Position < 0 || line1Position > 1 || line2Position < 0 || line2Position > 1)
+		{
+			nearPoint = point21 + vector2 * line2Position;
+			return { false, Vector3::zero() };
+		}
+
+		return { true, point11 + vector1 * line1Position };
+	}
+
 };
 
 class Vector3Int
@@ -298,4 +333,5 @@ inline Vector3::operator Vector3Int() { return Vector3Int(static_cast<int>(x), s
 
 inline Vector3Int::operator D3DXVECTOR3() { return D3DXVECTOR3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)); }
 inline Vector3Int::operator Vector3() { return Vector3Int(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)); }
+
 
