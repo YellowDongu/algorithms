@@ -14,15 +14,15 @@
 2차 필터링: D3DXIntersect를 사용한 세밀한 충돌 검사
 
 BOOL D3DXIntersect(
-  LPDIRECT3DDEVICE9 pDevice, Direct3D 장치 포인터
-  LPD3DXMESH pMesh, 충돌을 검사할 메쉬
-  const D3DXVECTOR3* pRayOrigin, 레이의 시작점
-  const D3DXVECTOR3* pRayDirection, 레이의 방향 벡터
-  BOOL* pHit, 충돌 여부를 반환받을 변수
-  D3DXVECTOR3* pHitPosition, 충돌 지점을 반환받을 변수
-  D3DXVECTOR3* pHitNormal, 충돌 표면의 법선 벡터를 반환받을 변수
-  float* pHitDistance, 충돌까지의 거리를 반환받을 변수
-  DWORD* pFaceIndex 충돌이 발생한 삼각형의 인덱스를 반환받을 변수
+  LPDIRECT3DDEVICE9 pDevice, Direct3D   장치 포인터
+  LPD3DXMESH pMesh,                     충돌을 검사할 메쉬
+  const D3DXVECTOR3* pRayOrigin,        레이의 시작점
+  const D3DXVECTOR3* pRayDirection,     레이의 방향 벡터
+  BOOL* pHit,                           충돌 여부를 반환받을 변수
+  D3DXVECTOR3* pHitPosition,            충돌 지점을 반환받을 변수
+  D3DXVECTOR3* pHitNormal,              충돌 표면의 법선 벡터를 반환받을 변수
+  float* pHitDistance,                  충돌까지의 거리를 반환받을 변수
+  DWORD* pFaceIndex                     충돌이 발생한 삼각형의 인덱스를 반환받을 변수
 );
 
 

@@ -80,53 +80,52 @@ void Output(const std::vector<std::vector<Type>>& list)
 	//std::cout.flush();
 }
 
-int Solution(const std::vector<std::string>& list);
+long long Solution(long long number);
 int main(void)
 {
-	Output(Solution(Input<std::string>()));
+	//Output(Solution(Input<int>()));
+	Output(Solution(InputSingle<long long>()));
 
 	//std::cout << ToString(Solution(Input<double>()), 15) << "\n";
 	//std::cout << ToString(Solution(Input<float>()), 7) << "\n";
 	return 0;
 }
 
-int Solution(const std::vector<std::string>& list)
+long long Solution(long long number)
 {
-	int height = std::stoi(list[0]), width = std::stoi(list[1]), step = 1;
-	std::vector<std::vector<int>> visiTable(height, std::vector<int>(width, 0));
-	std::unordered_map<char, std::pair<int, int>> movement = { { 'U', {-1, 0} }, { 'D', { 1, 0} }, { 'L', { 0,-1} }, { 'R', { 0, 1} } };
-	std::queue<std::pair<int, int>> queue;
+	std::vector<bool> table(number + 1, true);
+	std::vector<long long> candidates;
+	int left = 0, right = 0, end;
+	long long result = 0ll, sum = 0ll;
 
-	std::function<int(int, int, int)> Recursive;
-	Recursive = [&](int i, int j, int currentStep) -> int
-		{
-			visiTable[i][j] = currentStep;
-			std::pair<int, int> move = movement.find(list[i + 2][j])->second;
-			
-			int nextI = i + move.first;
-			int nextJ = j + move.second;
-
-			if (visiTable[nextI][nextJ] == 0)
-				visiTable[i][j] = Recursive(nextI, nextJ, currentStep);
-			else
-				visiTable[i][j] = visiTable[nextI][nextJ];
-
-			return visiTable[i][j];
-		};
-
-	for (int i = 0; i < height; i++)
+	candidates.reserve(number / 2ll);
+	for (long long i = 2ll; i <= number; i++)
 	{
-		for (int j = 0; j < width; j++)
-		{
-			if (visiTable[i][j] != 0)
-				continue;
+		if (!table[i])
+			continue;
+		candidates.push_back(i);
 
-			if (Recursive(i, j, step) == step)
-				step++;
-		}
+		for (long long j = i * i; j <= number; j += i)
+			table[j] = false;
 	}
 
-	return step - 1;
+	end = static_cast<int>(candidates.size());
+	while (right <= end)
+	{
+		if (sum >= number)
+		{
+			result += (sum == number) ? 1 : 0;
+			sum -= candidates[left++];
+			continue;
+		}
+
+		if (right >= end)
+			break;
+
+		sum += candidates[right++];
+	}
+
+	return result;
 }
 
 /* storage
@@ -188,6 +187,196 @@ long long Solution1(const std::vector<int>& list)
 // solved
 //#include <bits/stdc++.h>
 /*
+long long Solution(long long number)
+{
+	std::vector<bool> table(number + 1, true);
+	std::vector<long long> candidates, sums;
+	long long result = 0ll;
+
+	candidates.reserve(number / 2ll);
+	for (long long i = 2ll; i <= number; i++)
+	{
+		if (!table[i])
+			continue;
+		candidates.push_back(i);
+
+		for (long long j = i * i; j <= number; j += i)
+			table[j] = false;
+	}
+
+	sums.resize(candidates.size() + 1, 0ll);
+	sums[0] = 0ll;	
+
+	for (size_t i = 0; i < candidates.size(); i++)
+		sums[i + 1] = candidates[i] + sums[i];
+
+	for (size_t i = 0; i < candidates.size(); i++)
+	{
+		int left = static_cast<int>(i);
+		while (left >= 0)
+		{
+			long long difference = sums[i + 1] - sums[left];
+			if (number > difference)
+			{
+				left--;
+				continue;
+			}
+			
+			if(number == difference)
+				result++;
+			break;
+		}
+	}
+
+	return result;
+}
+
+std::vector<int> Solution(const std::vector<int>& list)
+{
+	int length = list[0], maxNumber = 0;
+	std::vector<int> result(length, 0), linker(1000001, -1);
+
+	for (int i = 0; i < length; i++)
+	{
+		linker[list[1 + i]] = i;
+		maxNumber = std::max(maxNumber, list[1 + i]);
+	}
+
+	for (int i = 0; i < length; i++)
+	{
+		int number = list[1 + i];
+
+		for (int j = number; j <= maxNumber; j += number)
+		{
+			if (linker[j] == -1)
+				continue;
+
+			result[linker[j]]--;
+			result[i]++;
+		}
+	}
+
+	return result;
+}
+
+std::string Solution(const std::vector<int>& list)
+{
+	int height = list[0], width = list[1], intialBlock = list[2];
+	int min = std::numeric_limits<int>::max(), max = std::numeric_limits<int>::min();
+	int result = std::numeric_limits<int>::max(), resultHeight = 0;
+	std::vector<std::vector<int>> land;
+
+	land.reserve(height);
+	for (int i = 0; i < height; i++)
+	{
+		std::vector<int>::const_iterator iterator = list.begin() + 3 + i * width;
+		land.push_back(std::vector<int>(iterator, iterator + width));
+		for (int j = 0; j < width; j++)
+		{
+			min = std::min(min, land[i][j]);
+			max = std::max(max, land[i][j]);
+		}
+	}
+
+	for (int k = max; k >= min; k--)
+	{
+		int value = 0;
+		int count = intialBlock;
+
+		for (int i = 0; i < height; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				int difference = land[i][j] - k;
+
+				count += difference;
+				value += difference * ((difference > 0) ?  2 : -1);
+			}
+		}
+
+		if (count < 0)
+			continue;
+
+		if (result <= value)
+			break;
+
+		result = value;
+		resultHeight = k;
+	}
+
+	return std::to_string(result) + " " + std::to_string(resultHeight);
+}
+
+long long Solution(const std::vector<int>& list)
+{
+	int length = list[0], bagLength = list[1], iterator = 0;
+	long long result = 0;
+
+	std::vector<std::pair<int, int>> items;
+	std::priority_queue<int, std::vector<int>, std::greater<int>> bags;
+	std::priority_queue<int> sortedQueue;
+	
+	items.reserve(length);
+	for (int i = 0; i < length; i++)
+	{
+		int index = (i + 1) * 2;
+		items.push_back({ list[index], list[index + 1] });
+	}
+
+	for (int i = 0; i < bagLength; i++)
+		bags.push(list[(length + 1) * 2 + i]);
+
+	std::sort(items.begin(), items.end());
+
+	while (!bags.empty())
+	{
+		int weight = bags.top();
+		bags.pop();
+
+		while (iterator < static_cast<int>(items.size()) && items[iterator].first <= weight)
+			sortedQueue.push(items[iterator++].second);
+
+		if (sortedQueue.empty())
+			continue;
+
+		result += static_cast<long long>(sortedQueue.top());
+		sortedQueue.pop();
+	}
+
+	return result;
+}
+
+long long Solution(const std::vector<int>& list)
+{
+	int length = list[0], bagLength = list[1];
+	long long result = 0;
+	std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::less<std::pair<int, int>>> queue;
+	std::multiset<int> bags;
+
+	for (int i = 0; i < length; i++)
+	{
+		int index = (i + 1) * 2;
+		queue.push({ list[index + 1], list[index] });
+	}
+
+	for (int i = 0; i < bagLength; i++)
+		bags.insert(list[(length + 1) * 2 + i]);
+
+	for (int i = 0; i < length; i++)
+	{
+		std::pair<int, int> item = queue.top();
+		queue.pop();
+
+		std::multiset<int>::iterator iterator = bags.lower_bound(item.second);
+		if (iterator != bags.end())
+		{
+			result += static_cast<long long>(item.first);
+			bags.erase(iterator);
+		}
+	}
+
+	return result;
+}
 
 int Solution(const std::vector<std::string>& list)
 {

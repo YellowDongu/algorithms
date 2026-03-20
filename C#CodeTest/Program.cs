@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Numerics;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters;
 
 namespace algorithms
 {
@@ -102,6 +105,630 @@ namespace algorithms
 
         static int Solution(List<int> list)
         {
+            int length = list[0], max = list.Last(), result = 0;
+            List<(int start, int end)> lineList = new List<(int, int)>(length);
+            PriorityQueue<int, int> queue = new PriorityQueue<int, int>(length);
+
+            for (int i = 0; i < list[0]; i++)
+            {
+                int start = list[i * 2 + 1], end = list[i * 2 + 2];
+                if(start > end)
+                {
+                    int storage = start;
+                    start = end;
+                    end = storage;
+                }
+
+                if (end - start > max)
+                    continue;
+
+                lineList.Add((start, end));
+            }
+
+            lineList.Sort((x, y) => x.end.CompareTo(y.end));
+
+            for (int i = 0; i < lineList.Count; i++)
+            {
+                queue.Enqueue(lineList[i].start, lineList[i].start);
+
+                while (lineList[i].end - queue.Peek() > max)
+                    queue.Dequeue();
+
+                result = Math.Max(result, queue.Count);
+            }
+
+            return result;
+        }
+    }
+}
+
+/*
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
+using System.Text;
+🥵
+*/
+namespace algorithms
+{
+    public class SolvedSolution
+    {
+        static int Solution(List<int> list)
+        {
+            int length = list[0], result = 0;
+            return result;
+        }
+
+        static int Solution(List<string> list)
+        {
+            int length = int.Parse(list[0]), result = 0;
+            return result;
+        }
+
+        //static List<int> Solution(List<int> list) { return new List<int>(); }
+        //static List<string> Solution(List<string> list) { return new List<string>(); }
+        /*
+        static int Solution(List<int> list)
+        {
+            int[] track = new int[list[0]], trackReversed = new int[list[0]];
+            int result = 0;
+
+            for (int i = 0; i < list[0]; i++)
+            {
+                int number = list[i + 1];
+                int I = list[0] - (i + 1);
+                track[i] = trackReversed[I] = 1;
+
+                for (int j = 0; j < i; j++)
+                {
+                    if (number <= list[j + 1])
+                        continue;
+
+                    track[i] = Math.Max(track[i], track[j] + 1);
+                }
+
+                number = list[I + 1];
+                for (int j = I + 1; j < list[0]; j++)
+                {
+                    if (number <= list[j + 1])
+                        continue;
+
+                    trackReversed[I] = Math.Max(trackReversed[I], trackReversed[j] + 1);
+                }
+
+            }
+
+            for (int i = 0; i < list[0]; i++)
+                result = Math.Max(result, track[i] + trackReversed[i] - 1);
+
+            return result;
+        }
+
+        static int Solution(List<int> list)
+        {
+            int length = list[0];
+            int[] lineStatus = new int[list[0]];
+            List<(int count, int index)> sorted = new List<(int, int)>(list[0]);
+
+            var BackTrack = null as Func<int, int[], int>;
+            BackTrack = (int index, int[] trackList) =>
+            {
+                int maxStack = 0;
+
+                for (int i = index + 1; i < length; i++)
+                {
+                    for (int j = 0; j < length; j++)
+                    {
+                        if ((trackList[sorted[i].index] & (1 << j)) != 0)
+                            continue;
+
+                        int back = trackList[i];
+                        trackList[i] ^= 1 << j;
+                        maxStack = Math.Max(maxStack, BackTrack(i, trackList));
+                        trackList[i] = back;
+                    }
+
+                    if (maxStack != 0)
+                        break;
+
+                }
+
+                return maxStack + 1;
+            };
+
+
+            for (int i = 0; i < length; i++)
+            {
+                int count = 0;
+                for (int j = 0; j < length; j++)
+                {
+                    if (list[i * length + j + 1] != 1)
+                        continue;
+                    lineStatus[i] ^= 1 << j;
+                    count++;
+                }
+                sorted.Add((count, i)); 
+            }
+
+            sorted.Sort();
+
+            return BackTrack(0, lineStatus);
+        }
+
+        static List<List<int>> Solution(List<int> list)
+        {
+            List<int> heap = new List<int>(list[0]);
+            int[] track = new int[list[0]];
+            List<List<int>> result = new List<List<int>>(2);
+
+            for (int i = 0; i < list[0]; i++)
+            {
+                int number = list[i + 1];
+                track[i] = i;
+
+                int left = 0, right = heap.Count;
+
+                while (left < right)
+                {
+                    int middle = (left + right) / 2;
+
+                    if (list[heap[middle] + 1] < number)
+                        left = middle + 1;
+                    else
+                        right = middle;
+                }
+
+                if (left == heap.Count)
+                    heap.Add(i);
+                else
+                    heap[left] = i;
+
+                if (0 < left && left < heap.Count)
+                    track[i] = heap[left - 1];
+            }
+
+            int index = heap.Last(), next = track[index];
+            result.Add(new List<int>(1) { heap.Count });
+            result.Add(new List<int>(heap.Count) { list[index + 1] });
+            while (index != next)
+            {
+                index = next;
+                next = track[index];
+                result[1].Add(list[index + 1]);
+            }
+
+            result[1].Reverse();
+            return result;
+        }
+
+        static List<List<int>> Solution(List<int> list)
+        {
+            List<int> heap = new List<int>(list[0]);
+            int[] track = new int[list[0]];
+            List<List<int>> result = new List<List<int>>(2);
+
+            for (int i = 0; i < list[0]; i++)
+            {
+                int number = list[i + 1];
+                track[i] = i;
+
+                int left = 0, right = heap.Count;
+
+                while (left < right)
+                {
+                    int middle = (left + right) / 2;
+
+                    if (list[heap[middle] + 1] < number)
+                        left = middle + 1;
+                    else
+                        right = middle;
+                }
+
+                if (left == heap.Count)
+                    heap.Add(i);
+                else
+                    heap[left] = i;
+
+                if (0 < left && left < heap.Count)
+                    track[i] = heap[left - 1];
+            }
+
+            int index = heap.Last(), next = track[index];
+            result.Add(new List<int>(1) { heap.Count });
+            result.Add(new List<int>(heap.Count) { list[index + 1] });
+            while (index != next)
+            {
+                index = next;
+                next = track[index];
+                result[1].Add(list[index + 1]);
+            }
+
+            result[1].Reverse();
+            return result;
+        }
+
+        static List<string> Solution(List<string> list)
+        {
+            int caseSize = int.Parse(list[0]);
+            Stack<char> stack = new Stack<char>(caseSize);
+            List<string> result = new List<string>(caseSize);
+
+            for (int number = 0; number < caseSize; number++)
+            {
+                stack.Clear();
+                foreach (var item in list[number + 1])
+                {
+                    if (item == '(')
+                    {
+                        stack.Push(item);
+                        continue;
+                    }
+
+                    if (stack.Count == 0)
+                    {
+                        stack.Push(item);
+                        break;
+                    }
+
+                    stack.Pop();
+                }
+
+                if(stack.Count > 0)
+                    result.Add("NO");
+                else
+                    result.Add("YES");
+            }
+
+            return result;
+        }
+
+        static string Solution(List<string> list)
+        {
+            int length = int.Parse(list[0]), areaA = 0, areaB = 0;
+            int[,] table = new int[length, length];
+            (int x, int y)[] movement = { (1, 0), (-1, 0), (0, 1), (0, -1) };
+            Queue<(int, int)> queue = new Queue<(int, int)>(length * length);
+
+            for (int j = 0; j < length; j++)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    if ((table[i, j] & 1) == 0)
+                    {
+                        queue.Enqueue((i, j));
+                        char cell = list[j + 1][i];
+                        areaA++;
+                        while (queue.Count > 0)
+                        {
+                            (int x, int y) current = queue.Dequeue();
+
+                            for (int k = 0; k < 4; k++)
+                            {
+                                int x = movement[k].x + current.x;
+                                int y = movement[k].y + current.y;
+
+                                if (x < 0 || x >= length || y < 0 || y >= length)
+                                    continue;
+
+                                if ((table[x, y] & 1) != 0 || list[y + 1][x] != cell)
+                                    continue;
+
+                                table[x, y] ^= 1;
+                                queue.Enqueue((x, y));
+                            }
+                        }
+                    }
+
+                    if ((table[i, j] & 2) == 0)
+                    {
+                        queue.Enqueue((i, j));
+                        bool cell = list[j + 1][i] != 'B';
+                        areaB++;
+
+                        while (queue.Count > 0)
+                        {
+                            (int x, int y) current = queue.Dequeue();
+
+                            for (int k = 0; k < 4; k++)
+                            {
+                                int x = movement[k].x + current.x;
+                                int y = movement[k].y + current.y;
+
+                                if (x < 0 || x >= length || y < 0 || y >= length)
+                                    continue;
+
+                                if ((table[x, y] & 2) != 0 || (list[y + 1][x] != 'B') != cell)
+                                    continue;
+
+                                table[x, y] ^= 2;
+                                queue.Enqueue((x, y));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return areaA.ToString() + " " + areaB.ToString();
+        }
+
+        static int Solution(int length)
+        {
+            long[] table = new long[length + 1];
+            table[0] = table[1] = 1;
+
+            for (int i = 2; i <= length; i++)
+            {
+                table[i] = (table[i - 1] + (table[i - 2] * 2)) % 10007;
+            }
+
+            return (int)table[length];
+        }
+
+        static List<int> Solution(List<int> list)
+        {
+            int length = list[0];
+            PriorityQueue<int, (int, bool)> queue = new PriorityQueue<int, (int, bool)>(length);
+            List<int> result = new List<int>(length);
+
+            for (int i = 0; i < length; i++)
+            {
+                int number = list[i + 1];
+
+                if (number == 0)
+                {
+                    if (queue.Count == 0)
+                        result.Add(0);
+                    else
+                        result.Add(queue.Dequeue());
+
+                    continue;
+                }
+
+                if (number < 0)
+                    queue.Enqueue(number, (number * -1, false));
+                else
+                    queue.Enqueue(number, (number, true));
+
+            }
+
+            return result;
+        }
+
+        static List<string> Solution(List<string> list)
+        {
+            int lengthA = int.Parse(list[0]), lengthB = int.Parse(list[1]);
+            HashSet<string> names = new HashSet<string>(lengthA);
+            List<string> result = new List<string>(1 + Math.Max(lengthA, lengthB)) { "0" };
+
+            for (int i = 0; i < lengthA; i++)
+                names.Add(list[2 + i]);
+
+            for (int i = 0; i < lengthB; i++)
+            {
+                string target = list[2 + lengthA + i];
+                if (!names.Contains(target))
+                    continue;
+
+                result.Add(target);
+            }
+
+            result.Sort();
+            result[0] = (result.Count - 1).ToString();
+
+            return result;
+        }
+
+        static int Solution(List<int> list)
+        {
+            int maxX = list[0], maxY = list[1], maxZ = list[2], max = 0;
+            int[,,] table = new int[maxX, maxY, maxZ];
+            (int, int, int)[] movement = { (1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1) };
+            Queue<(int, int, int)> queue = new Queue<(int, int, int)>(maxX * maxY * maxZ);
+
+            for (int i = 0; i < maxZ; i++)
+            {
+                int zIndex = i * maxY * maxX;
+                for (int j = 0; j < maxY; j++)
+                {
+                    int yIndex = zIndex + j * maxX;
+                    for (int k = 0; k < maxX; k++)
+                    {
+                        table[k, j, i] = list[yIndex + k + 3];
+                        if(table[k, j, i] == 1)
+                            queue.Enqueue((k, j, i));
+                    }
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                (int X, int Y, int Z) = queue.Dequeue();
+                int depth = table[X, Y, Z] + 1;
+
+                foreach ((int x, int y, int z) item in movement)
+                {
+                    int x = X + item.x, y = Y + item.y, z = Z + item.z;
+
+                    if (x < 0 || y < 0 || z < 0 || x >= maxX || y >= maxY || z >= maxZ)
+                        continue;
+
+                    if (table[x, y, z] != 0)
+                        continue;
+
+                    table[x, y, z] = depth;
+                    queue.Enqueue((x, y, z));
+                }
+            }
+
+
+            for (int i = 0; i < maxZ; i++)
+            {
+                int zIndex = i * maxY * maxX;
+                for (int j = 0; j < maxY; j++)
+                {
+                    int yIndex = zIndex + j * maxX;
+                    for (int k = 0; k < maxX; k++)
+                    {
+                        if (table[k, j, i] == 0)
+                            return -1;
+
+                        max = Math.Max(max, table[k, j, i]);
+                    }
+                }
+            }
+
+            return max - 1;
+        }
+
+        static int Solution(List<int> list)
+        {
+            int length = list[0], lineLength = list[1], result = -1;
+            List<List<int>> graph = new List<List<int>>(length + 1);
+            bool[] visitable = new bool[length + 1];
+            Queue<int> queue = new Queue<int>(length);
+
+            for (int i = 0; i <= length; i++)
+                graph.Add(new List<int>());
+
+            for (int i = 0; i < lineLength; i++)
+            {
+                int index = (i + 1) * 2;
+                graph[list[index]].Add(list[index + 1]); 
+                graph[list[index + 1]].Add(list[index]); 
+            }
+
+            queue.Enqueue(1);
+            visitable[1] = true;
+
+            while (queue.Count > 0)
+            {
+                int index = queue.Dequeue();
+                result++;
+                foreach (var item in graph[index])
+                {
+                    if (visitable[item])
+                        continue;
+                    visitable[item] = true;
+                    queue.Enqueue(item);
+                }
+            }
+
+            return result;
+        }
+
+        static List<int> Solution(List<int> list)
+        {
+            int length = list.Count, maxNumber = 12;
+            List<int> result = new List<int>(length);
+            int[] table = new int[maxNumber + 1];
+
+            table[0] = 1;
+            table[1] = 1;
+            table[2] = 2;
+
+            for (int j = 3; j <= maxNumber; j++)
+                table[j] = table[j - 1] + table[j - 2] + table[j - 3];
+
+            for (int i = 0; i < list[0]; i++)
+                result.Add(table[list[i + 1]]);
+
+            return result;
+        }
+
+        static List<List<int>> Solution(List<int> list)
+        {
+            int length = list[0];
+            List<List<int>> result = new List<List<int>>(2) { new List<int>(1), new List<int>(length) };
+            
+            var LowerBound = (List<int> array, int target) =>
+            {
+                int left = 0, right = array.Count;
+                int middle;
+
+                while (left < right)
+                {
+                    middle = (left + right) / 2;
+
+                    if (target <= array[middle])
+                        right = middle;
+                    else
+                        left = middle + 1;
+                }
+
+                return left;
+            };
+
+            for (int i = 0; i < length; i++)
+            {
+                int number = list[i + 1];
+
+                int index = LowerBound(result[1], number);
+                if(index >= result[1].Count)
+                    result[1].Add(number);
+                else
+                    result[1][index] = number;
+            }
+
+            result[0].Add(result[1].Count);
+
+            return result;
+        }
+
+        static int Solution(List<int> list)
+        {
+            int nodeCount = list[0];
+            int length = list[1];
+            int[] parents = new int[nodeCount], rank = new int[nodeCount];
+
+            var FindParent = (int index) =>
+            {
+                int root = index;
+                while (parents[root] != root)
+                    root = parents[root];
+
+                while (index != root)
+                {
+                    int next = parents[index];
+                    parents[index] = root;
+                    index = next;
+                }
+                return root;
+            };
+
+            for (int i = 0; i < nodeCount; i++)
+            {
+                parents[i] = i;
+                rank[i] = 0;
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                int parentA = FindParent(list[i * 2 + 2]);
+                int parentB = FindParent(list[i * 2 + 3]);
+
+                if (parentA == parentB)
+                    return i + 1;
+
+                if (rank[parentA] < rank[parentB])
+                    parents[parentA] = parentB;
+                else if (rank[parentA] > rank[parentB])
+                    parents[parentB] = parentA;
+                else
+                {
+                    parents[parentB] = parentA;
+                    rank[parentA]++;
+                }
+            }
+
+            return 0;
+        }
+
+        static int Solution(List<int> list)
+        {
             int length = list[0], lineLength = list[1], result = 0, max = 0;
             List<List<(int, int)>> graph = new List<List<(int, int)>>(length + 1);
             bool[] visiTable = new bool[length + 1];
@@ -141,39 +768,7 @@ namespace algorithms
 
             return result - max;
         }
-    }
-}
 
-/*
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
-using System.Text;
-🥵
-*/
-namespace algorithms
-{
-    public class SolvedSolution
-    {
-        static int Solution(List<int> list)
-        {
-            int length = list[0], result = 0;
-            return result;
-        }
-
-        static int Solution(List<string> list)
-        {
-            int length = int.Parse(list[0]), result = 0;
-            return result;
-        }
-
-        //static List<int> Solution(List<int> list) { return new List<int>(); }
-        //static List<string> Solution(List<string> list) { return new List<string>(); }
-        /*
         static List<int> Solution(int caseLength)
         {
             List<int> result = new List<int>(caseLength);

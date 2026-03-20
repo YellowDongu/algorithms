@@ -17,7 +17,7 @@ enum class CollisionShape
 class CollisionObj
 {
 public:
-	CollisionObj() : pos(Vector2::zero()), shapeType(CollisionShape::END){}
+	CollisionObj() : pos(Vector2(0,0)), shapeType(CollisionShape::END){}
 	virtual ~CollisionObj() {}
 
 

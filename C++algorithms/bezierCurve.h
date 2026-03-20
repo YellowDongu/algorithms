@@ -1,4 +1,5 @@
 #pragma once
+// GCC/CLANG
 // Compile: g++ -std=c++17 bezier.cpp -O2 -o bezier
 // Run: ./bezier
 #include <vector>

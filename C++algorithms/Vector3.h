@@ -1,20 +1,28 @@
 #pragma once
+#include <cmath>
+
+#define DX11
+
+#ifdef DX11
+#include <d3d11.h>
+#include <DirectXMath.h>
+#endif
+#ifdef DX9
 #include <d3d9.h>
 #include <d3dx9.h>
 #pragma comment (lib, "d3d9.lib")
 #pragma comment (lib, "d3dx9.lib")
 #pragma comment (lib, "winmm.lib")
-
-#include <cmath>
-#include <vector>
+#endif
 
 // 다렉에서 준거 안쓰고 이걸 만드는 이유
 // 1. 내가 유니티에 절여저있어서 유니티랑 비슷하게 만들고 싶음
 // 2. 이름 좀 길고 치기 귀찮
+// DX에서 제공하는 계산기능이 꽤나 있어서 굳이 이걸 따로 만들어서 쓸 이유는 없긴 함.
+// 다만 사칙연산 관련 기능들이 연산자 오버로딩이 안되어있고 함수로 되어있어서 상당히 번거롭고 이름 긴건 매한가지긴 해서 상속받아 쓰거나 typedef로 쓰면 됨
 
-
-class Vector3Int;
-class Vector3
+struct Vector3Int;
+struct Vector3
 {
 public:
 	Vector3(void) : x(0.0f), y(0.0f), z(0.0f) {}
@@ -23,14 +31,25 @@ public:
 
 	float x, y, z;
 
-	// 묵시적 형변환
-	operator D3DXVECTOR3(void);
+
 	operator Vector3Int(void);
 
-	// 명시적 형변환
+#ifdef DX11
+	operator DirectX::XMFLOAT3(void) { return DirectX::XMFLOAT3(x,y,z); }
+	operator DirectX::XMINT3(void) { return DirectX::XMINT3(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)); }
+	operator DirectX::XMVECTOR(void) { return DirectX::XMVectorSet(x, y, z, 1.0f); }
+
+	DirectX::XMFLOAT3 toDx(void) { return *this; }
+	DirectX::XMINT3 toIntDx(void) { return *this; }
+#endif
+
+#ifdef DX9
+	operator D3DXVECTOR3(void);
+
 	D3DXVECTOR3 toDx(void) { return D3DXVECTOR3(x, y, z); }
 	static D3DXVECTOR3 toDx(const Vector3& object) { return D3DXVECTOR3(object.x, object.y, object.z); }
 	static Vector3 toVec3(const D3DXVECTOR3& object) { return Vector3(object.x, object.y, object.z); }
+#endif
 
 	// 가독성을 위한 정의
 	static Vector3 zero(void) { return Vector3{ 0.0f, 0.0f, 0.0f }; }
@@ -224,7 +243,7 @@ public:
 
 };
 
-class Vector3Int
+struct Vector3Int
 {
 public:
 	Vector3Int(void) : x(0), y(0), z(0) {}
@@ -234,13 +253,23 @@ public:
 	int x, y, z;
 
 	// 묵시적 형변환
-	operator D3DXVECTOR3(void);
 	operator Vector3(void);
 
-	// 명시적 형변환
+#ifdef DX11
+	operator DirectX::XMINT3(void) { return DirectX::XMINT3(x, y, z); }
+	operator DirectX::XMFLOAT3(void) { return DirectX::XMFLOAT3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)); }
+	operator DirectX::XMVECTOR(void) { return DirectX::XMVectorSet(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 1.0f); }
+
+	DirectX::XMINT3 toDx(void) { return *this; }
+	DirectX::XMFLOAT3 toFloatDx(void) { return *this; }
+#endif
+
+#ifdef DX9
+	operator D3DXVECTOR3(void);
 	D3DXVECTOR3 toDx(void) { return D3DXVECTOR3(x, y, z); }
 	static D3DXVECTOR3 toDx(const Vector3Int& object) { return D3DXVECTOR3(static_cast<float>(object.x), static_cast<float>(object.y), static_cast<float>(object.z)); }
 	static Vector3Int toVec3(const D3DXVECTOR3& object) { return Vector3Int(static_cast<int>(object.x), static_cast<int>(object.y), static_cast<int>(object.z)); }
+#endif
 
 	//가독성을 위한 정의
 	static Vector3Int zero(void) { return Vector3Int{ 0, 0, 0 }; }
@@ -325,13 +354,14 @@ public:
 };
 
 
+#ifdef DX9
 inline Vector3::operator D3DXVECTOR3() { return D3DXVECTOR3(x, y, z); }
 inline Vector3::operator Vector3Int() { return Vector3Int(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)); }
 
-
-
-
 inline Vector3Int::operator D3DXVECTOR3() { return D3DXVECTOR3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)); }
 inline Vector3Int::operator Vector3() { return Vector3Int(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)); }
+#endif
 
 
+#ifdef DX11
+#endif

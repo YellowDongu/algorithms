@@ -1,20 +1,24 @@
 #pragma once
 
-#define DIRECTINPUT_VERSION 0x0800
+#ifdef DX9
 #include <d3d9.h>
 #include <d3dx9.h>
 #pragma comment (lib, "d3d9.lib")
 #pragma comment (lib, "d3dx9.lib")
 #pragma comment (lib, "winmm.lib")
+#endif // DX9
 
-#include <dinput.h>
-#include <thread>
 #include <vector>
+#include <memory>
+#include <thread>
+#include <atomic>
 
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
 #pragma comment (lib, "dinput8.lib")
 
 // directX에서 제공되는 기능을 이용한 입력장치 상태 확인
-// directX 세팅을 하고서 해야된다
+// directX 세팅을 하고서 해야된다 -> 이유를 알아봐야됨
 
 enum class KeyType
 {
@@ -165,124 +169,103 @@ enum
 class InputManager
 {
 private:
-	InputManager(void) {}
-	~InputManager(void) {}
+	InputManager(void) = default;
+	InputManager(HWND _hwnd) : hwnd(_hwnd) {}
+	~InputManager(void) { Release(); }
 
 	InputManager(const InputManager&) = delete;
 	InputManager& operator=(const InputManager&) = delete;
+	void Release(void);
 
 public:
-	static InputManager* Init(HINSTANCE hInstance, HWND _hwnd);
+	static std::shared_ptr<InputManager> Create(HINSTANCE hInstance, HWND _hwnd);
 	void update(void);
-	void release(void);
-	void infiniteUpdate(void);
 	void threadUpdate(void);
 
 	bool getButton(KeyType key) { return getState(key) == KeyState::Press; }
 	bool getButtonDown(KeyType key) { return getState(key) == KeyState::Down; }
 	bool getButtonUp(KeyType key) { return getState(key) == KeyState::Up; }
 
-	bool getMouseButton(MouseKey key) { return getMouseState(key) == KeyState::Press; }
-	bool getMouseButtonDown(MouseKey key) { return getMouseState(key) == KeyState::Down; }
-	bool getMouseButtonUp(MouseKey key) { return getMouseState(key) == KeyState::Up; }
+	bool getButton(MouseKey key) { return getMouseState(key) == KeyState::Press; }
+	bool getButtonDown(MouseKey key) { return getMouseState(key) == KeyState::Down; }
+	bool getButtonUp(MouseKey key) { return getMouseState(key) == KeyState::Up; }
 
 	const POINT& getMousePos(void) const { return mousePos; }
 	const int& getMouseWheel(void) const { return mouseWheel; }
-
-
-private:
 	KeyState getState(KeyType key) { return states[static_cast<UINT8>(key)]; }
 	KeyState getMouseState(MouseKey key) { return mouseStates[static_cast<int>(key)]; }
 
-	HWND hwnd = 0;
-	std::vector<KeyState> states = {};
-	std::vector<KeyState> mouseStates = {};
-	POINT mousePos = { (0,0) };
-	int mouseWheel = 0;
+private:
+	void infiniteUpdate(void);
 
+	static bool created;
+	std::atomic<bool> threadOn = false;
+	std::thread updateThread;
+
+	HWND hwnd = NULL;
 	LPDIRECTINPUT8 dInput = NULL; // DirectInput 객체
 	LPDIRECTINPUTDEVICE8 dInputDevice = NULL; // DirectInput 장치 (키보드)
-	LPDIRECTINPUTDEVICE8 dMouseDevice = NULL; // DirectInput 장치 (키보드)
-	DIMOUSESTATE mouseState = { 0,0,0,0 }; // 마우스 상태
+	LPDIRECTINPUTDEVICE8 dMouseDevice = NULL; // DirectInput 장치 (마우스)
 
 
-	std::thread* updateThread;
-	bool on = true;
-	bool off = false;
+	int mouseWheel = 0;
+	POINT mousePos = { (0,0) };
+	//std::vector<KeyState> states = std::vector<KeyState>(KEY_TYPE_COUNT, KeyState::None);
+	//std::vector<KeyState> mouseStates = std::vector<KeyState>(MouseKey::END, KeyState::None);
+	KeyState states[KEY_TYPE_COUNT] = { KeyState::None };
+	KeyState mouseStates[MouseKey::END] = { KeyState::None };
 };
-
-
-//extern InputManager* Input;
 
 //cpp
 //#include "InputManager.h"
+bool InputManager::created = false;
 
-InputManager* Input = nullptr;
-
-
-InputManager* InputManager::Init(HINSTANCE hInstance, HWND _hwnd)
+std::shared_ptr<InputManager> InputManager::Create(HINSTANCE hInstance, HWND _hwnd)
 {
-	InputManager* input = new InputManager();
-	input->hwnd = _hwnd;
-	input->states.resize(KEY_TYPE_COUNT, KeyState::None);
-	input->mouseStates.resize((int)MouseKey::END, KeyState::None);
-
-	if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&input->dInput, NULL)))
-	{
-		delete input;
+	if (created)
 		return nullptr;
-	}
+
+	std::shared_ptr<InputManager> newInstance = std::make_shared<InputManager>(_hwnd);
+
+	if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&newInstance->dInput, NULL)))
+		return nullptr;
 
 	// 키보드 장치 생성
-	if (FAILED(input->dInput->CreateDevice(GUID_SysKeyboard, &input->dInputDevice, NULL)))
-	{
-		delete input;
+	if (FAILED(newInstance->dInput->CreateDevice(GUID_SysKeyboard, &newInstance->dInputDevice, NULL)))
 		return nullptr;
-	}
+
 
 	// 마우스 장치 생성
-	if (FAILED(input->dInput->CreateDevice(GUID_SysMouse, &input->dMouseDevice, NULL)))
-	{
-		delete input;
+	if (FAILED(newInstance->dInput->CreateDevice(GUID_SysMouse, &newInstance->dMouseDevice, NULL)))
 		return nullptr;
-	}
 
 	// 장치에 대한 객체를 설정
-	if (FAILED(input->dInputDevice->SetCooperativeLevel(_hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
-	{
-		delete input;
+	if (FAILED(newInstance->dInputDevice->SetCooperativeLevel(_hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
 		return nullptr;
-	}
 
 	// 장치에 대한 객체를 설정
-	if (FAILED(input->dMouseDevice->SetCooperativeLevel(_hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
-	{
-		delete input;
+	if (FAILED(newInstance->dMouseDevice->SetCooperativeLevel(_hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
 		return nullptr;
-	}
 
 	// 키보드 데이터 포맷 설정
-	if (FAILED(input->dInputDevice->SetDataFormat(&c_dfDIKeyboard)))
-	{
-		delete input;
+	if (FAILED(newInstance->dInputDevice->SetDataFormat(&c_dfDIKeyboard)))
 		return nullptr;
-	}
 
 	// 키보드 데이터 포맷 설정
-	if (FAILED(input->dMouseDevice->SetDataFormat(&c_dfDIMouse)))
-	{
-		delete input;
+	if (FAILED(newInstance->dMouseDevice->SetDataFormat(&c_dfDIMouse)))
 		return nullptr;
-	}
 
-
-
-	return input;
+	created = true;
+	return newInstance;
 }
 
 void InputManager::update()
 { // 프레임마다 키를 모두 스캔해서 갱신
-	BYTE asciiKeys[KEY_TYPE_COUNT] = {};
+	BYTE asciiKeys[KEY_TYPE_COUNT];
+	DIMOUSESTATE mouseState;
+
+	GetCursorPos(&mousePos);
+	ScreenToClient(hwnd, &mousePos);
 
 	HRESULT hr = dInputDevice->GetDeviceState(sizeof(asciiKeys), (LPVOID)&asciiKeys);
 	if (FAILED(hr))
@@ -295,8 +278,6 @@ void InputManager::update()
 				return;
 		}
 	}
-
-
 
 	for (UINT32 key = 0; key < KEY_TYPE_COUNT; key++)
 	{
@@ -380,44 +361,41 @@ void InputManager::update()
 
 	mouseWheel = mouseState.lZ;
 
-	GetCursorPos(&mousePos);
-	ScreenToClient(hwnd, &mousePos);
-
 }
 
-void InputManager::release()
+void InputManager::Release()
 {
 	if (dInputDevice)
 	{
 		dInputDevice->Unacquire();
 		dInputDevice->Release();
 	}
+	if (dMouseDevice)
+	{
+		dMouseDevice->Unacquire();
+		dMouseDevice->Release();
+	}
 	if (dInput)
-	{
 		dInput->Release();
-	}
 
-	on = false;
-
-	while (!off)
-	{
-
-	}
+	threadOn.store(false);
+	updateThread.join();
 }
 
 void InputManager::infiniteUpdate()
 {
-	while (on)
-	{
+	while (threadOn.load())
 		update();
-	}
-	off = true;
 }
 
 void InputManager::threadUpdate()
 {
-	std::thread newThread(&InputManager::infiniteUpdate, this);
-	updateThread = &newThread;
-	// 스레드가 종료될 때까지 대기
-	newThread.detach();
+	if (threadOn.load())
+	{
+		threadOn.store(false);
+		updateThread.join();
+	}
+
+	threadOn.store(true);
+	updateThread = std::thread(&InputManager::infiniteUpdate, this);
 }

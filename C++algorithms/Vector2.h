@@ -1,5 +1,7 @@
 ﻿#pragma once
+#define NOMINMAX
 #include <cmath>
+#include <algorithm>
 
 #define pi			3.14159265358979f
 
@@ -218,7 +220,10 @@ public:
 	}
 
 	static long long CounterClockWise(const Vector2& point1, const Vector2& point2, const Vector2& point3) { return Vector2::Cross(point2 - point1, point3 - point1); }
-	static bool OnLine(const Vector2& lineStart, const Vector2& lineEnd, const Vector2& point) { return std::min(lineStart.x, lineEnd.x) <= point.x && point.x <= std::max(lineStart.x, lineEnd.x) && std::min(lineStart.y, lineEnd.y) <= point.y && point.y <= std::max(lineStart.y, lineEnd.y); }
+	static bool OnLine(const Vector2& lineStart, const Vector2& lineEnd, const Vector2& point)
+	{
+		return std::min(lineStart.x, lineEnd.x) <= point.x && point.x <= std::max(lineStart.x, lineEnd.x) && std::min(lineStart.y, lineEnd.y) <= point.y && point.y <= std::max(lineStart.y, lineEnd.y);
+	}
 	static bool Intersect(const Vector2& one_Start, const Vector2& one_End, const Vector2& other_Start, const Vector2& other_End)
 	{
 		long long ccwValue1 = CounterClockWise(one_Start, one_End, other_Start);

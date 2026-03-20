@@ -96,8 +96,19 @@ namespace algorithms
     {
         public static int Main()
         {
-            IO.Output<int>(Solution(IO.Input<int>()));
+            Program instance = new Program();
+            instance.Run();
+            //IO.Output<int>(Solution(IO.Input<int>()));
             return 0;
+        }
+
+        async public void Run()
+        {
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            Console.WriteLine("------------------------------------");
+            await Task.Delay(1000);
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+
         }
 
         static int Solution(List<int> list)
@@ -138,6 +149,10 @@ namespace algorithms
                     priorityQueue.Enqueue(item.Item1, item.Item2);
                 }
             }
+
+
+
+
 
             return result - max;
         }
